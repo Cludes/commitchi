@@ -63,10 +63,11 @@ function bar(label, x, y, value) {
 }
 
 async function main() {
+  const u = encodeURIComponent(USERNAME)
   const [user, events, repos] = await Promise.all([
-    gh(`/users/${USERNAME}`),
-    gh(`/users/${USERNAME}/events/public?per_page=100`),
-    gh(`/users/${USERNAME}/repos?per_page=100&sort=pushed`),
+    gh(`/users/${u}`),
+    gh(`/users/${u}/events/public?per_page=100`),
+    gh(`/users/${u}/repos?per_page=100&sort=pushed`),
   ])
 
   const langCounts = {}

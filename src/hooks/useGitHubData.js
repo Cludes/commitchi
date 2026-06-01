@@ -53,10 +53,11 @@ export function useGitHubData() {
     setCachedAt(null)
 
     try {
+      const u = encodeURIComponent(username)
       const [userRes, eventsRes, reposRes] = await Promise.all([
-        fetch(`${GITHUB_API}/users/${username}`),
-        fetch(`${GITHUB_API}/users/${username}/events/public?per_page=100`),
-        fetch(`${GITHUB_API}/users/${username}/repos?per_page=100&sort=pushed`),
+        fetch(`${GITHUB_API}/users/${u}`),
+        fetch(`${GITHUB_API}/users/${u}/events/public?per_page=100`),
+        fetch(`${GITHUB_API}/users/${u}/repos?per_page=100&sort=pushed`),
       ])
 
       if (!userRes.ok) {
