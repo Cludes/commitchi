@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { getSpriteForState, recolorSprite } from '../utils/sprites'
 
 const PIXEL_SIZE = 11
 
-export function PetCanvas({ species, mood, stage }) {
+export const PetCanvas = forwardRef(function PetCanvas(
+  { species, mood, stage, ariaLabel },
+  ref
+) {
   const canvasRef = useRef(null)
   const [interact, setInteract] = useState('')
-  const timerRef = useRef(null)
+  const [hearts, setHearts] = useState(0)
+  const animTimer = useRef(null)
+  const heartTimer = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -31,26 +36,41 @@ export function PetCanvas({ species, mood, stage }) {
     })
   }, [species, mood, stage])
 
-  useEffect(() => () => clearTimeout(timerRef.current), [])
+  useEffect(() => () => {
+    clearTimeout(animTimer.current)
+    clearTimeout(heartTimer.current)
+  }, [])
 
   const isDead = mood === 'dead'
-  const isFloating = !isDead && mood !== 'critical' && mood !== 'sad'
 
-  const handleClick = () => {
-    const anim = isDead ? 'shake' : 'bounce'
-    setInteract(anim)
-    clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => setInteract(''), 450)
+  const poke = () => {
+    setInteract(isDead ? 'shake' : 'bounce')
+    clearTimeout(animTimer.current)
+    animTimer.current = setTimeout(() => setInteract(''), 450)
   }
+
+  const feed = () => {
+    poke()
+    if (!isDead) {
+      setHearts((h) => h + 1)
+      clearTimeout(heartTimer.current)
+      heartTimer.current = setTimeout(() => setHearts(0), 650)
+    }
+  }
+
+  useImperativeHandle(ref, () => ({ feed, poke }))
+
+  const isFloating = !isDead && mood !== 'critical' && mood !== 'sad'
 
   return (
     <div
       className={`pet-canvas-wrapper ${interact ? interact : isFloating ? 'floating' : ''} ${isDead ? 'ghost-float' : ''}`}
-      onClick={handleClick}
+      onClick={poke}
     >
-      <canvas ref={canvasRef} className="pet-canvas" />
+      <canvas ref={canvasRef} className="pet-canvas" role="img" aria-label={ariaLabel} />
       {mood === 'ecstatic' && <div className="sparkles">+ + +</div>}
+      {hearts > 0 && <div key={hearts} className="pet-heart">&lt;3</div>}
       {isDead && <div className="rip-text">R.I.P.</div>}
     </div>
   )
-}
+})

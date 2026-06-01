@@ -74,13 +74,14 @@ async function main() {
   const topLanguage = Object.entries(langCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
 
   const evList = Array.isArray(events) ? events : []
+  const hasActivity = evList.some((e) => e.type === 'PushEvent')
   const species = getSpecies(topLanguage)
   const daysSince = getDaysSinceLastCommit(evList)
   const streak = getCurrentStreak(evList)
   const effective = getTotalCommits(evList) + user.public_repos * 3
   const level = getLevel(effective)
   const stage = getEvolutionStage(level)
-  const mood = getMood(daysSince, streak)
+  const mood = getMood(daysSince, streak, hasActivity)
   const xp = getXPProgress(effective)
   const state = {
     species, stage, mood, level, xp, streak, daysSince,

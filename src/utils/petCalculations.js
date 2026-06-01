@@ -91,7 +91,8 @@ export function getEvolutionStage(level) {
   return 'elder'
 }
 
-export function getMood(daysSince, streak) {
+export function getMood(daysSince, streak, hasActivity = true) {
+  if (!hasActivity) return 'dormant'
   if (daysSince >= 21) return 'dead'
   if (daysSince >= 11) return 'critical'
   if (daysSince >= 7) return 'sad'
@@ -110,7 +111,7 @@ export function getHappiness(streak) {
 }
 
 export function getHealth(mood) {
-  const map = { ecstatic: 100, happy: 85, content: 65, hungry: 40, sad: 20, critical: 5, dead: 0 }
+  const map = { ecstatic: 100, happy: 85, content: 65, hungry: 40, sad: 20, critical: 5, dead: 0, dormant: 50 }
   return map[mood] ?? 50
 }
 
@@ -129,20 +130,53 @@ export function getMoodLabel(mood) {
     sad: 'Sad',
     critical: '!! Critical !!',
     dead: 'Dead',
+    dormant: 'Dormant',
   }
   return map[mood] || mood
 }
 
-export function getMoodMessage(mood, species) {
+// Returns an array of message variants for a mood (cycled by the device button).
+export function getMoodMessages(mood, species) {
   const name = species.charAt(0).toUpperCase() + species.slice(1)
   const map = {
-    ecstatic: `${name} is thriving! Keep the streak going!`,
-    happy: `${name} is happy. Commit again soon!`,
-    content: `${name} is okay. A commit would be nice...`,
-    hungry: `${name} is getting hungry. Push some code!`,
-    sad: `${name} is sad and hungry. Please commit something!`,
-    critical: `${name} is in CRITICAL condition. PUSH CODE NOW.`,
-    dead: `${name} has died. No commits in over 3 weeks. RIP.`,
+    ecstatic: [
+      `${name} is thriving! Keep the streak going!`,
+      `${name} has never been happier.`,
+      `On fire! ${name} loves your commits.`,
+    ],
+    happy: [
+      `${name} is happy. Commit again soon!`,
+      `${name} is in good spirits.`,
+      `${name} is content with your pace.`,
+    ],
+    content: [
+      `${name} is okay. A commit would be nice...`,
+      `${name} is getting a little restless.`,
+      `${name} is waiting patiently.`,
+    ],
+    hungry: [
+      `${name} is getting hungry. Push some code!`,
+      `${name}'s tummy is rumbling.`,
+      `Feed ${name} a commit!`,
+    ],
+    sad: [
+      `${name} is sad and hungry. Please commit something!`,
+      `${name} misses your commits.`,
+      `${name} looks downcast.`,
+    ],
+    critical: [
+      `${name} is in CRITICAL condition. PUSH CODE NOW.`,
+      `${name} is fading. Commit immediately!`,
+      `Emergency! ${name} needs commits!`,
+    ],
+    dead: [
+      `${name} has died. No commits in over 3 weeks. RIP.`,
+      `${name} is gone. Push code to revive it.`,
+    ],
+    dormant: [
+      `${name} is dormant. No public commits yet.`,
+      `Push public code to wake ${name} up!`,
+    ],
   }
-  return map[mood] || ''
+  return map[mood] || ['']
 }

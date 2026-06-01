@@ -10,15 +10,21 @@ function levelColor(count) {
 }
 
 export function Heatmap({ dailyCommits }) {
-  // Build last WEEKS*DAYS days, oldest first (top-left), filling columns left to right.
+  // Rows = weekdays (Mon..Sun), columns = weeks. The last column ends at today in
+  // its real weekday row; cells after today are empty (future).
   const today = new Date()
+  const todayDow = (today.getDay() + 6) % 7 // 0 = Mon ... 6 = Sun
 
   const columns = []
   for (let col = 0; col < WEEKS; col++) {
     const cells = []
     for (let row = 0; row < DAYS; row++) {
-      const index = col * DAYS + row
-      const daysAgo = WEEKS * DAYS - 1 - index
+      const weeksAgo = WEEKS - 1 - col
+      const daysAgo = weeksAgo * 7 + (todayDow - row)
+      if (daysAgo < 0) {
+        cells.push({ future: true, key: `f-${col}-${row}` })
+        continue
+      }
       const d = new Date(today)
       d.setDate(d.getDate() - daysAgo)
       const count = dailyCommits[d.toDateString()] || 0
@@ -39,14 +45,18 @@ export function Heatmap({ dailyCommits }) {
         <div className="heatmap-grid">
           {columns.map((cells, col) => (
             <div key={col} className="heatmap-col">
-              {cells.map((cell, row) => (
-                <span
-                  key={row}
-                  className="heatmap-cell"
-                  style={{ background: levelColor(cell.count) }}
-                  title={`${cell.key}: ${cell.count} commits`}
-                />
-              ))}
+              {cells.map((cell) =>
+                cell.future ? (
+                  <span key={cell.key} className="heatmap-cell empty" />
+                ) : (
+                  <span
+                    key={cell.key}
+                    className="heatmap-cell"
+                    style={{ background: levelColor(cell.count) }}
+                    title={`${cell.key}: ${cell.count} commits`}
+                  />
+                )
+              )}
             </div>
           ))}
         </div>

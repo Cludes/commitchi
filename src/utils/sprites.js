@@ -200,6 +200,26 @@ const EGG = grid([
   '................',
 ])
 
+// Sleeping (dormant) - closed eyes, uses O/P so it tints to species color
+const SLEEPING = grid([
+  '................',
+  '................',
+  '.....OOOOOO.....',
+  '...OOPPPPPPOO...',
+  '..OPPPPPPPPPPO..',
+  '.OPPPPPPPPPPPPO.',
+  'OPPPPPPPPPPPPPPO',
+  'OPPKKPPPPPPKKPPO',
+  'OPPPPPPPPPPPPPPO',
+  'OPPPPPPRRPPPPPPO',
+  'OPPPPPPPPPPPPPPO',
+  '.OPPPPPPPPPPPPO.',
+  '..OPPPPPPPPPPO..',
+  '...OOPPPPPPOO...',
+  '.....OOOOOO.....',
+  '................',
+])
+
 // Ghost (dead) - uses O/P so it tints to species color
 const GHOST = grid([
   '.....OOOOOO.....',
@@ -233,6 +253,7 @@ export const SPRITES = {
 
 export function getSpriteForState(species, mood, stage) {
   if (stage === 'egg') return EGG
+  if (mood === 'dormant') return SLEEPING
   const set = SPRITES[species] || SPRITES.blob
   if (mood === 'dead') return set.dead
   if (mood === 'ecstatic' || mood === 'happy' || mood === 'content') return set.happy

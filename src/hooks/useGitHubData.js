@@ -32,16 +32,20 @@ export function useGitHubData() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [cachedAt, setCachedAt] = useState(null)
+  const [rateLimitReset, setRateLimitReset] = useState(null)
 
-  const fetchUser = useCallback(async (username) => {
+  const fetchUser = useCallback(async (username, { force = false } = {}) => {
     setError(null)
+    setRateLimitReset(null)
 
-    const cached = readCache(username)
-    if (cached) {
-      setData(cached.data)
-      setCachedAt(cached.cachedAt)
-      setLoading(false)
-      return
+    if (!force) {
+      const cached = readCache(username)
+      if (cached) {
+        setData(cached.data)
+        setCachedAt(cached.cachedAt)
+        setLoading(false)
+        return
+      }
     }
 
     setLoading(true)
@@ -57,7 +61,15 @@ export function useGitHubData() {
 
       if (!userRes.ok) {
         if (userRes.status === 404) throw new Error(`User "${username}" not found.`)
-        if (userRes.status === 403) throw new Error('GitHub API rate limit hit. Try again in a minute.')
+        if (userRes.status === 403 || userRes.status === 429) {
+          const remaining = userRes.headers.get('x-ratelimit-remaining')
+          const reset = userRes.headers.get('x-ratelimit-reset')
+          if (remaining === '0' && reset) {
+            setRateLimitReset(Number(reset) * 1000)
+            throw new Error('GitHub API rate limit reached.')
+          }
+          throw new Error('GitHub API request was forbidden. Try again shortly.')
+        }
         throw new Error('Failed to fetch user data.')
       }
 
@@ -86,5 +98,5 @@ export function useGitHubData() {
     }
   }, [])
 
-  return { data, loading, error, cachedAt, fetchUser }
+  return { data, loading, error, cachedAt, rateLimitReset, fetchUser }
 }
