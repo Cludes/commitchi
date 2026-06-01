@@ -3,7 +3,7 @@
 A Tamagotchi-style digital pet that lives or dies based on your GitHub commit activity.
 Feed it commits. Keep it alive. Don't let it die.
 
-**Live demo:** https://cludes.github.io/dev-pet/?u=Cludes
+**Live demo:** https://cludes.github.io/commitchi/?u=Cludes
 
 ---
 
@@ -43,7 +43,7 @@ activity. A 12-week contribution heatmap and recent commit feed show on the devi
 No setup needed. Just visit:
 
 ```
-https://cludes.github.io/dev-pet/?u=YOUR_GITHUB_USERNAME
+https://cludes.github.io/commitchi/?u=YOUR_GITHUB_USERNAME
 ```
 
 Tap the SHARE YOUR PET button to copy a direct link to your creature.
@@ -65,7 +65,7 @@ In your forked repo: Settings - Pages - Source - select **GitHub Actions** - Sav
 That's it. Every push to `main` or `master` will auto-deploy. Your instance will be live at:
 
 ```
-https://YOUR_USERNAME.github.io/dev-pet/
+https://YOUR_USERNAME.github.io/commitchi/
 ```
 
 The base path is detected automatically from the repo name - no config needed.
@@ -75,8 +75,8 @@ The base path is detected automatically from the repo name - no config needed.
 ## Run locally
 
 ```bash
-git clone https://github.com/Cludes/dev-pet.git
-cd dev-pet
+git clone https://github.com/Cludes/commitchi.git
+cd commitchi
 npm install
 npm run dev
 ```
