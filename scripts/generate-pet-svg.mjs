@@ -127,7 +127,7 @@ async function main() {
   <text x="${petX + 72}" y="${petY + 168}" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="${moodColor}">${esc(state.moodLabel.toUpperCase())}</text>
 
   <text x="${rx}" y="74" font-family="'Courier New',monospace" font-size="16" font-weight="bold" fill="${LCD_DARK}">@${esc(user.login)}</text>
-  <text x="${rx}" y="92" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="${LCD_MID}">${esc((STAGE_NAMES[stage] + ' ' + SPECIES_NAMES[species]).toUpperCase())}${topLanguage ? ' - ' + esc(topLanguage.toUpperCase()) : ''}</text>
+  <text x="${rx}" y="92" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="${LCD_MID}">${esc((STAGE_NAMES[stage] + ' ' + SPECIES_NAMES[species]).toUpperCase())}</text>
 
   <rect x="${W - 74}" y="56" width="44" height="34" rx="4" fill="none" stroke="${LCD_DARK}" stroke-width="2"/>
   <text x="${W - 52}" y="71" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="${LCD_MID}">LVL</text>

@@ -64,7 +64,6 @@ function PetScreen({ pet }) {
           <span className="pet-species">
             {STAGE_NAMES[pet.stage]} {SPECIES_NAMES[pet.species]}
           </span>
-          {pet.topLanguage && <span className="pet-lang">{pet.topLanguage}</span>}
         </div>
         <div className="pet-level-block">
           <span className="pet-level-label">LVL</span>
