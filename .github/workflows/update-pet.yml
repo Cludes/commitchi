@@ -1,0 +1,45 @@
+name: Update Pet SVG
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # daily at 06:00 UTC
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'scripts/generate-pet-svg.mjs'
+      - 'src/utils/sprites.js'
+      - 'src/utils/petCalculations.js'
+      - '.github/workflows/update-pet.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-pet
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Generate pet SVG
+        env:
+          COMMITCHI_USER: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/generate-pet-svg.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add commitchi.svg
+          if git diff --staged --quiet; then
+            echo "No changes to pet."
+          else
+            git commit -m "Update pet SVG"
+            git push
+          fi

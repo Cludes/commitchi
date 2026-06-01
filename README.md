@@ -50,6 +50,36 @@ Tap the SHARE YOUR PET button to copy a direct link to your creature.
 
 ---
 
+## Put your pet on your GitHub profile
+
+Your profile README can't run JavaScript, but it can show an image. This repo ships
+a GitHub Action that regenerates an SVG of your pet once a day and commits it as
+`commitchi.svg`, so you can embed a live, self-updating pet on your profile.
+
+**1. Fork this repo** (see below) so the Action runs under your account.
+
+**2. Let the Action run.** It runs daily at 06:00 UTC, and you can trigger it
+manually from the Actions tab (Update Pet SVG - Run workflow). It uses your account
+(`github.repository_owner`) automatically, so no config is needed. It produces
+`commitchi.svg` in the repo root.
+
+**3. Add the image to your profile README.** Create a repo named exactly your
+username (e.g. `Cludes/Cludes`), and put this in its `README.md`:
+
+```markdown
+![My Commitchi](https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi.svg)
+```
+
+The pet's mood, level, streak, and stats update every day as you commit.
+
+To regenerate it locally:
+
+```bash
+COMMITCHI_USER=YOUR_USERNAME node scripts/generate-pet-svg.mjs
+```
+
+---
+
 ## Self-host your own instance
 
 Fork this repo and deploy your own copy in two steps:
