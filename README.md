@@ -76,19 +76,25 @@ The pet's mood, level, streak, and stats update every day as you commit.
 
 You can have the Action insert that image line into your profile README for you,
 so you never touch it manually. Because the Action's built-in token can only write
-to this repo, you need to give it write access to your profile repo via a token:
+to this repo, you give it write access to your profile repo via a GitHub App:
 
-1. Create a [Personal Access Token](https://github.com/settings/tokens). A
-   fine-grained token with **Contents: Read and write** on your `<username>/<username>`
-   repo is enough (or a classic token with the `repo` scope).
-2. In this repo: Settings - Secrets and variables - Actions - New repository secret.
-   Name it `PROFILE_TOKEN` and paste the token.
-3. Create your `<username>/<username>` repo if you haven't.
+1. Create a [GitHub App](https://github.com/settings/apps/new) (owned by your
+   account). Give it **Repository permissions - Contents: Read and write**. No
+   webhook needed.
+2. Generate a private key for the app (downloads a `.pem` file), and note the
+   numeric **App ID**.
+3. Install the app on your account, granting it access to your
+   `<username>/<username>` profile repo.
+4. In this repo: Settings - Secrets and variables - Actions, and add two secrets:
+   - `CLUDESAPP_ID` - the App ID
+   - `CLUDESAPP_PEM` - the full contents of the `.pem` private key file
+5. Create your `<username>/<username>` repo if you haven't.
 
-On the next run, the `profile` job clones your profile repo and inserts the embed
-between `<!-- COMMITCHI:START -->` / `<!-- COMMITCHI:END -->` markers. It is
-idempotent - it only commits when the block is missing or changed. Without the
-`PROFILE_TOKEN` secret, the job is skipped.
+On the next run, the `profile` job mints a short-lived installation token from the
+app, clones your profile repo, and inserts the embed between
+`<!-- COMMITCHI:START -->` / `<!-- COMMITCHI:END -->` markers. It is idempotent -
+it only commits when the block is missing or changed. Without the `CLUDESAPP_ID`
+secret, the job is skipped.
 
 To regenerate the pet SVG locally:
 

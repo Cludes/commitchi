@@ -45,26 +45,37 @@ jobs:
           fi
 
   # Optional: auto-embed the pet in your profile README (the <owner>/<owner> repo).
-  # Requires a Personal Access Token with write access to that repo, stored as the
-  # PROFILE_TOKEN secret. Without it, this job is skipped.
+  # Requires a GitHub App with Contents: write on that repo, installed on your
+  # account, with its App ID and private key stored as the CLUDESAPP_ID and
+  # CLUDESAPP_PEM secrets. Without them, this job is skipped.
   profile:
     needs: update
     runs-on: ubuntu-latest
     env:
-      PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
+      APP_ID: ${{ secrets.CLUDESAPP_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Mint profile access token
+        if: env.APP_ID != ''
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLUDESAPP_ID }}
+          private-key: ${{ secrets.CLUDESAPP_PEM }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.repository_owner }}
       - name: Embed pet in profile README
-        if: env.PROFILE_TOKEN != ''
+        if: env.APP_ID != ''
         env:
           OWNER: ${{ github.repository_owner }}
+          TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -e
-          if ! git clone --depth 1 "https://x-access-token:${PROFILE_TOKEN}@github.com/${OWNER}/${OWNER}.git" profile; then
-            echo "::warning::Profile repo ${OWNER}/${OWNER} not found. Create it to enable auto-embed."
+          if ! git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/${OWNER}/${OWNER}.git" profile; then
+            echo "::warning::Profile repo ${OWNER}/${OWNER} not found, or the app lacks access. Create it and install the app there."
             exit 0
           fi
           README=profile/README.md node scripts/update-profile-readme.mjs
