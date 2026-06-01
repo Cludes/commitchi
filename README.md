@@ -1,6 +1,7 @@
-# DevPet
+# Commitchi
 
-A digital pet that lives or dies based on your GitHub commit activity.
+A Tamagotchi-style digital pet that lives or dies based on your GitHub commit activity.
+Feed it commits. Keep it alive. Don't let it die.
 
 **Live demo:** https://cludes.github.io/dev-pet/?u=Cludes
 
@@ -32,7 +33,8 @@ Your pet's **species** is determined by your most-used language:
 | Ruby | Gem |
 | Everything else | Blob |
 
-Your pet's **level** and **evolution stage** grow with your total commit activity over time.
+Your pet's **level**, **XP bar**, and **evolution stage** grow with your total commit
+activity. A 12-week contribution heatmap and recent commit feed show on the device screen.
 
 ---
 
@@ -44,7 +46,7 @@ No setup needed. Just visit:
 https://cludes.github.io/dev-pet/?u=YOUR_GITHUB_USERNAME
 ```
 
-Share that URL with anyone to show them your pet.
+Tap the SHARE YOUR PET button to copy a direct link to your creature.
 
 ---
 
@@ -87,5 +89,6 @@ Then open `http://localhost:5173` and enter any GitHub username.
 
 - Uses the public GitHub API - no authentication or API keys required
 - The API allows 60 requests per hour per IP address unauthenticated
+- Results are cached in your browser for 5 minutes to ease rate limits
 - Only public commit activity is visible
-- Activity data covers the last 90 days of public events
+- Activity data covers the last ~90 days of public events

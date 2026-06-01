@@ -45,6 +45,9 @@ export function getCurrentStreak(events) {
   return streak
 }
 
+const LEVEL_THRESHOLDS = [0, 10, 50, 150, 400, 1000, 2500, 5000]
+const MAX_LEVEL = LEVEL_THRESHOLDS.length
+
 export function getLevel(totalCommits) {
   if (totalCommits < 10) return 1
   if (totalCommits < 50) return 2
@@ -54,6 +57,30 @@ export function getLevel(totalCommits) {
   if (totalCommits < 2500) return 6
   if (totalCommits < 5000) return 7
   return 8
+}
+
+export function getXPProgress(totalCommits) {
+  const level = getLevel(totalCommits)
+  if (level >= MAX_LEVEL) {
+    return { pct: 100, current: totalCommits, needed: totalCommits, max: true }
+  }
+  const floor = LEVEL_THRESHOLDS[level - 1]
+  const ceil = LEVEL_THRESHOLDS[level]
+  const current = totalCommits - floor
+  const needed = ceil - floor
+  return { pct: Math.round((current / needed) * 100), current, needed, max: false }
+}
+
+// Map of toDateString() -> commit count, from PushEvents
+export function getDailyCommits(events) {
+  const counts = {}
+  events
+    .filter((e) => e.type === 'PushEvent')
+    .forEach((e) => {
+      const key = new Date(e.created_at).toDateString()
+      counts[key] = (counts[key] || 0) + (e.payload?.commits?.length || 1)
+    })
+  return counts
 }
 
 export function getEvolutionStage(level) {

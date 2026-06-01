@@ -3,7 +3,7 @@ import {
   getSpecies, getDaysSinceLastCommit, getCurrentStreak,
   getLevel, getEvolutionStage, getMood, getHunger,
   getHappiness, getHealth, getTotalCommits,
-  getMoodLabel, getMoodMessage,
+  getMoodLabel, getMoodMessage, getXPProgress, getDailyCommits,
 } from '../utils/petCalculations'
 
 export function usePetState(githubData) {
@@ -14,13 +14,16 @@ export function usePetState(githubData) {
     const species = getSpecies(topLanguage)
     const daysSince = getDaysSinceLastCommit(events)
     const streak = getCurrentStreak(events)
-    const totalCommits = getTotalCommits(events)
-    const level = getLevel(totalCommits + (user.public_repos * 3))
+    const rawCommits = getTotalCommits(events)
+    const effectiveCommits = rawCommits + user.public_repos * 3
+    const level = getLevel(effectiveCommits)
     const stage = getEvolutionStage(level)
     const mood = getMood(daysSince, streak)
     const hunger = getHunger(daysSince)
     const happiness = getHappiness(streak)
     const health = getHealth(mood)
+    const xp = getXPProgress(effectiveCommits)
+    const dailyCommits = getDailyCommits(events)
 
     const recentActivity = events
       .filter(e => e.type === 'PushEvent')
@@ -42,9 +45,11 @@ export function usePetState(githubData) {
       happiness,
       health,
       level,
+      xp,
       streak,
       daysSince,
-      totalCommits: totalCommits + user.public_repos,
+      totalCommits: rawCommits + user.public_repos,
+      dailyCommits,
       recentActivity,
       username: user.login,
       avatar: user.avatar_url,

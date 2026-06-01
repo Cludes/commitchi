@@ -1,10 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getSpriteForState, recolorSprite } from '../utils/sprites'
 
-const PIXEL_SIZE = 12
+const PIXEL_SIZE = 11
 
 export function PetCanvas({ species, mood, stage }) {
   const canvasRef = useRef(null)
+  const [interact, setInteract] = useState('')
+  const timerRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -29,13 +31,25 @@ export function PetCanvas({ species, mood, stage }) {
     })
   }, [species, mood, stage])
 
-  const isFloating = mood !== 'dead' && mood !== 'critical' && mood !== 'sad'
+  useEffect(() => () => clearTimeout(timerRef.current), [])
+
   const isDead = mood === 'dead'
+  const isFloating = !isDead && mood !== 'critical' && mood !== 'sad'
+
+  const handleClick = () => {
+    const anim = isDead ? 'shake' : 'bounce'
+    setInteract(anim)
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => setInteract(''), 450)
+  }
 
   return (
-    <div className={`pet-canvas-wrapper ${isFloating ? 'floating' : ''} ${isDead ? 'ghost-float' : ''}`}>
+    <div
+      className={`pet-canvas-wrapper ${interact ? interact : isFloating ? 'floating' : ''} ${isDead ? 'ghost-float' : ''}`}
+      onClick={handleClick}
+    >
       <canvas ref={canvasRef} className="pet-canvas" />
-      {mood === 'ecstatic' && <div className="sparkles">✦ ✦ ✦</div>}
+      {mood === 'ecstatic' && <div className="sparkles">+ + +</div>}
       {isDead && <div className="rip-text">R.I.P.</div>}
     </div>
   )
