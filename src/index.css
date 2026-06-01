@@ -4,9 +4,9 @@
 
 body {
   margin: 0;
-  background: #0d0d0f;
-  color: #e0e0e0;
-  font-family: 'Courier New', Courier, monospace;
+  background: #f1e8fb;
+  color: #2a2a32;
+  font-family: 'Consolas', 'SF Mono', 'Menlo', 'Segoe UI', system-ui, monospace;
   -webkit-font-smoothing: antialiased;
 }
 

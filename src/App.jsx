@@ -150,15 +150,34 @@ function minutesAgo(ts) {
   return `${m}m ago`
 }
 
+function getInitialTheme() {
+  try {
+    const stored = localStorage.getItem('commitchi:theme')
+    if (stored === 'light' || stored === 'dark') return stored
+  } catch {
+    // storage unavailable
+  }
+  return 'light'
+}
+
 export default function App() {
   const { data, loading, error, cachedAt, fetchUser } = useGitHubData()
   const pet = usePetState(data)
+  const [theme, setTheme] = useState(getInitialTheme)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const u = params.get('u')
     if (u) fetchUser(u)
   }, [fetchUser])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('commitchi:theme', theme)
+    } catch {
+      // storage unavailable
+    }
+  }, [theme])
 
   const handleSearch = (username) => {
     const url = new URL(window.location.href)
@@ -168,7 +187,22 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app" data-theme={theme}>
+      <div className="theme-toggle">
+        <button
+          className={theme === 'light' ? 'active' : ''}
+          onClick={() => setTheme('light')}
+        >
+          LIGHT
+        </button>
+        <button
+          className={theme === 'dark' ? 'active' : ''}
+          onClick={() => setTheme('dark')}
+        >
+          DARK
+        </button>
+      </div>
+
       <header className="app-header">
         <h1 className="logo">
           COMMITCHI<span className="logo-cursor">_</span>

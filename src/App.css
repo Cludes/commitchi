@@ -1,25 +1,88 @@
 :root {
   --lcd-bg: #c8f569;
   --lcd-dark: #0f380f;
-  --lcd-mid: #306230;
+  --lcd-mid: #2a5a2a;
   --lcd-light: #8bac0f;
   --pink: #ff6eb4;
   --pixel: 'Press Start 2P', 'Courier New', monospace;
-  --mono: 'Courier New', Courier, monospace;
+  --mono: 'Consolas', 'SF Mono', 'Menlo', 'Segoe UI', system-ui, monospace;
+}
+
+/* ---- Light theme (default) ---- */
+.app {
+  --page-glow1: rgba(255, 110, 180, 0.18);
+  --page-glow2: rgba(255, 159, 67, 0.18);
+  --page-bg: #f1e8fb;
+  --page-text: #6a6276;
+  --page-text-strong: #4a4252;
+  --surface: #ffffff;
+  --surface-border: #d8cae8;
+  --input-text: #2a2a32;
+  --input-placeholder: #b3a8c2;
+  --err-bg: #ffe3e3;
+  --err-border: #ffb3b3;
+  --err-text: #c92a2a;
+}
+
+/* ---- Dark theme ---- */
+.app[data-theme='dark'] {
+  --page-glow1: rgba(255, 110, 180, 0.08);
+  --page-glow2: rgba(255, 159, 67, 0.08);
+  --page-bg: #0d0d0f;
+  --page-text: #888;
+  --page-text-strong: #aaa;
+  --surface: #141416;
+  --surface-border: #2a2a2a;
+  --input-text: #e0e0e0;
+  --input-placeholder: #444;
+  --err-bg: #1a0f0f;
+  --err-border: #3d1515;
+  --err-text: #ff6b6b;
 }
 
 /* ---- Layout ---- */
 .app {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #0d0d0f;
+  background: var(--page-bg);
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(255, 110, 180, 0.08), transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(255, 159, 67, 0.08), transparent 40%);
-  color: #e0e0e0;
+    radial-gradient(circle at 20% 10%, var(--page-glow1), transparent 42%),
+    radial-gradient(circle at 80% 90%, var(--page-glow2), transparent 42%);
+  color: var(--page-text);
   font-family: var(--mono);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ---- Theme toggle ---- */
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  border: 2px solid var(--surface-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.theme-toggle button {
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.55rem;
+  border: none;
+  background: transparent;
+  color: var(--page-text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.theme-toggle button.active {
+  background: var(--pink);
+  color: #fff;
 }
 
 .app-header {
@@ -48,7 +111,7 @@
 .logo-sub {
   font-family: var(--pixel);
   font-size: 0.45rem;
-  color: #666;
+  color: var(--page-text);
   letter-spacing: 0.15em;
   margin: 0;
 }
@@ -68,7 +131,7 @@
   font-family: var(--pixel);
   padding: 1.2rem;
   font-size: 0.5rem;
-  color: #333;
+  color: var(--page-text);
   letter-spacing: 0.1em;
 }
 
@@ -78,15 +141,15 @@
 .search-row {
   display: flex;
   align-items: center;
-  border: 2px solid #2a2a2a;
+  border: 2px solid var(--surface-border);
   border-radius: 6px;
-  background: #141416;
+  background: var(--surface);
   overflow: hidden;
 }
 
 .search-prefix {
   padding: 0 0.4rem 0 0.8rem;
-  color: #555;
+  color: var(--page-text);
   font-size: 0.78rem;
   white-space: nowrap;
 }
@@ -96,14 +159,14 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #e0e0e0;
+  color: var(--input-text);
   font-family: var(--mono);
   font-size: 0.9rem;
   padding: 0.7rem 0;
   caret-color: var(--pink);
 }
 
-.search-input::placeholder { color: #333; }
+.search-input::placeholder { color: var(--input-placeholder); }
 
 .search-btn {
   font-family: var(--pixel);
@@ -122,7 +185,7 @@
 
 .cache-note {
   font-size: 0.65rem;
-  color: #444;
+  color: var(--page-text);
   margin-top: -0.6rem;
   letter-spacing: 0.05em;
 }
@@ -228,14 +291,14 @@
 }
 
 .pet-species {
-  font-size: 0.68rem;
-  color: var(--lcd-mid);
+  font-size: 0.72rem;
+  color: var(--lcd-dark);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 700;
 }
 
-.pet-lang { font-size: 0.64rem; color: var(--lcd-mid); }
+.pet-lang { font-size: 0.7rem; color: var(--lcd-mid); font-weight: 700; }
 
 .pet-level-block {
   display: flex;
@@ -379,8 +442,8 @@
 }
 
 .pet-message {
-  font-size: 0.7rem;
-  color: var(--lcd-mid);
+  font-size: 0.78rem;
+  color: var(--lcd-dark);
   text-align: center;
   margin: 0;
   max-width: 260px;
@@ -488,9 +551,9 @@
 
 .feed-item {
   display: grid;
-  grid-template-columns: 80px 1fr 44px;
+  grid-template-columns: 84px 1fr 46px;
   gap: 0.5rem;
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   padding: 0.25rem 0;
   border-bottom: 1px solid rgba(15, 56, 15, 0.2);
   align-items: center;
@@ -554,7 +617,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.8rem;
-  color: #555;
+  color: var(--page-text);
   font-family: var(--pixel);
   font-size: 0.6rem;
   padding: 2rem 0;
@@ -582,11 +645,11 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  background: #1a0f0f;
-  border: 2px solid #3d1515;
+  background: var(--err-bg);
+  border: 2px solid var(--err-border);
   border-radius: 6px;
   padding: 0.8rem 1rem;
-  color: #ff6b6b;
+  color: var(--err-text);
   font-size: 0.8rem;
   width: 100%;
 }
@@ -595,7 +658,7 @@
 
 .empty-state {
   text-align: center;
-  color: #555;
+  color: var(--page-text-strong);
   font-family: var(--pixel);
   font-size: 0.6rem;
   line-height: 1.8;
@@ -608,19 +671,20 @@
 
 .empty-egg {
   font-size: 3rem;
-  color: #2a2a30;
+  color: var(--pink);
+  opacity: 0.7;
   animation: pulse-empty 3s ease-in-out infinite;
 }
 
 @keyframes pulse-empty {
-  0%, 100% { color: #1e1e22; }
-  50% { color: #3a3a44; }
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.85; }
 }
 
 .empty-hint {
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: #444;
+  color: var(--page-text);
 }
 
 /* ---- Mobile ---- */
