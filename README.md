@@ -72,7 +72,25 @@ username (e.g. `Cludes/Cludes`), and put this in its `README.md`:
 
 The pet's mood, level, streak, and stats update every day as you commit.
 
-To regenerate it locally:
+### Auto-embed in your profile (optional)
+
+You can have the Action insert that image line into your profile README for you,
+so you never touch it manually. Because the Action's built-in token can only write
+to this repo, you need to give it write access to your profile repo via a token:
+
+1. Create a [Personal Access Token](https://github.com/settings/tokens). A
+   fine-grained token with **Contents: Read and write** on your `<username>/<username>`
+   repo is enough (or a classic token with the `repo` scope).
+2. In this repo: Settings - Secrets and variables - Actions - New repository secret.
+   Name it `PROFILE_TOKEN` and paste the token.
+3. Create your `<username>/<username>` repo if you haven't.
+
+On the next run, the `profile` job clones your profile repo and inserts the embed
+between `<!-- COMMITCHI:START -->` / `<!-- COMMITCHI:END -->` markers. It is
+idempotent - it only commits when the block is missing or changed. Without the
+`PROFILE_TOKEN` secret, the job is skipped.
+
+To regenerate the pet SVG locally:
 
 ```bash
 COMMITCHI_USER=YOUR_USERNAME node scripts/generate-pet-svg.mjs
