@@ -64,10 +64,14 @@ manually from the Actions tab (Update Pet SVG - Run workflow). It uses your acco
 `commitchi.svg` in the repo root.
 
 **3. Add the image to your profile README.** Create a repo named exactly your
-username (e.g. `Cludes/Cludes`), and put this in its `README.md`:
+username (e.g. `Cludes/Cludes`), and put this in its `README.md`. The `<picture>`
+element shows a dark-themed card to viewers using GitHub dark mode:
 
-```markdown
-![My Commitchi](https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi.svg)
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi-dark.svg">
+  <img alt="My Commitchi" src="https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi.svg">
+</picture>
 ```
 
 The pet's mood, level, streak, and stats update every day as you commit.

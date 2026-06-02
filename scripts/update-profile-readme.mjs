@@ -13,8 +13,14 @@ if (!owner) {
 
 const START = '<!-- COMMITCHI:START -->'
 const END = '<!-- COMMITCHI:END -->'
-const img = `![My Commitchi](https://raw.githubusercontent.com/${owner}/commitchi/master/commitchi.svg)`
-const block = `${START}\n${img}\n${END}`
+const base = `https://raw.githubusercontent.com/${owner}/commitchi/master`
+const picture = [
+  '<picture>',
+  `  <source media="(prefers-color-scheme: dark)" srcset="${base}/commitchi-dark.svg">`,
+  `  <img alt="My Commitchi" src="${base}/commitchi.svg">`,
+  '</picture>',
+].join('\n')
+const block = `${START}\n${picture}\n${END}`
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
