@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   getSpecies, getLevel, getXPProgress, getMood, getCurrentStreak,
-  getDailyCommits, getEvolutionStage, getHealth, getMoodLabel,
+  getDailyCommits, getEvolutionStage, getHealth, getMoodLabel, getHappiness,
 } from './petCalculations'
 
 // Build a PushEvent N days before now (optionally with a commit count).
@@ -151,6 +151,32 @@ describe('getDailyCommits', () => {
   it('ignores non-push events', () => {
     const events = [{ type: 'IssuesEvent', created_at: new Date().toISOString() }]
     expect(getDailyCommits(events)).toEqual({})
+  })
+})
+
+describe('getHappiness', () => {
+  it('starts from a mood-based floor even with no streak', () => {
+    expect(getHappiness(0, 'happy')).toBe(60)
+    expect(getHappiness(0, 'content')).toBe(45)
+    expect(getHappiness(0, 'sad')).toBe(15)
+    expect(getHappiness(0, 'dead')).toBe(0)
+    expect(getHappiness(0, 'dormant')).toBe(0)
+  })
+
+  it('a short streak nudges the bar up from the floor', () => {
+    // happy base 60, 2/30 of remaining 40 = ~3 -> 63
+    expect(getHappiness(2, 'happy')).toBe(63)
+    expect(getHappiness(2, 'happy')).toBeGreaterThan(getHappiness(0, 'happy'))
+  })
+
+  it('a 30-day streak fills to 100 from any mood floor', () => {
+    expect(getHappiness(30, 'happy')).toBe(100)
+    expect(getHappiness(30, 'sad')).toBe(100)
+    expect(getHappiness(99, 'content')).toBe(100)
+  })
+
+  it('defaults mood to happy', () => {
+    expect(getHappiness(0)).toBe(60)
   })
 })
 

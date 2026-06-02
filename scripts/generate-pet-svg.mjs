@@ -98,7 +98,7 @@ async function main() {
   const xp = getXPProgress(effective)
   const state = {
     species, stage, mood, level, xp, streak, daysSince,
-    hunger: getHunger(daysSince), happiness: getHappiness(streak), health: getHealth(mood),
+    hunger: getHunger(daysSince), happiness: getHappiness(streak, mood), health: getHealth(mood),
     moodLabel: getMoodLabel(mood),
     totalCommits: getTotalCommits(evList) + user.public_repos,
   }

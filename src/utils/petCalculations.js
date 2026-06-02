@@ -106,8 +106,16 @@ export function getHunger(daysSince) {
   return Math.min(100, Math.round((daysSince / 21) * 100))
 }
 
-export function getHappiness(streak) {
-  return Math.min(100, Math.round((streak / 30) * 100))
+// Happiness = a base level set by how the pet currently feels (mood), plus a streak
+// bonus that fills the remainder toward 100 as the streak approaches 30 days.
+const MOOD_HAPPINESS_BASE = {
+  ecstatic: 90, happy: 60, content: 45, hungry: 30, sad: 15, critical: 5, dead: 0, dormant: 0,
+}
+
+export function getHappiness(streak, mood = 'happy') {
+  const base = MOOD_HAPPINESS_BASE[mood] ?? 50
+  const streakBonus = Math.round((Math.min(streak, 30) / 30) * (100 - base))
+  return Math.min(100, base + streakBonus)
 }
 
 export function getHealth(mood) {
