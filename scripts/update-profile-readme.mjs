@@ -1,6 +1,7 @@
 // Inserts or updates the Commitchi embed block in a GitHub profile README.
 // Idempotent: only changes the file when the block is missing or different.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import process from 'node:process'
 
 const owner = process.env.OWNER || process.argv[2]
@@ -11,11 +12,24 @@ if (!owner) {
   process.exit(1)
 }
 
+// Cache-busting token derived from the SVG contents, so GitHub's image proxy refetches
+// the cards exactly when they change (and stays stable when they don't).
+function cacheToken() {
+  if (process.env.CACHE_BUST) return process.env.CACHE_BUST
+  try {
+    const hash = createHash('sha1')
+    hash.update(readFileSync('commitchi.svg'))
+    hash.update(readFileSync('commitchi-dark.svg'))
+    return hash.digest('hex').slice(0, 8)
+  } catch {
+    return new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  }
+}
+
 const START = '<!-- COMMITCHI:START -->'
 const END = '<!-- COMMITCHI:END -->'
 const base = `https://raw.githubusercontent.com/${owner}/commitchi/master`
-// Cache-busting token: changes daily so GitHub's image proxy refetches updated cards.
-const v = process.env.CACHE_BUST || new Date().toISOString().slice(0, 10).replace(/-/g, '')
+const v = cacheToken()
 const picture = [
   '<picture>',
   `  <source media="(prefers-color-scheme: dark)" srcset="${base}/commitchi-dark.svg?v=${v}">`,
