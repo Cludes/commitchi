@@ -14,10 +14,12 @@ if (!owner) {
 const START = '<!-- COMMITCHI:START -->'
 const END = '<!-- COMMITCHI:END -->'
 const base = `https://raw.githubusercontent.com/${owner}/commitchi/master`
+// Cache-busting token: changes daily so GitHub's image proxy refetches updated cards.
+const v = process.env.CACHE_BUST || new Date().toISOString().slice(0, 10).replace(/-/g, '')
 const picture = [
   '<picture>',
-  `  <source media="(prefers-color-scheme: dark)" srcset="${base}/commitchi-dark.svg">`,
-  `  <img alt="My Commitchi" src="${base}/commitchi.svg">`,
+  `  <source media="(prefers-color-scheme: dark)" srcset="${base}/commitchi-dark.svg?v=${v}">`,
+  `  <img alt="My Commitchi" src="${base}/commitchi.svg?v=${v}">`,
   '</picture>',
 ].join('\n')
 const block = `${START}\n${picture}\n${END}`
