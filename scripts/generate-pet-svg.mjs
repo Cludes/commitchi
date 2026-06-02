@@ -113,11 +113,11 @@ async function main() {
   const rx = 240 // right column x
   const lastCommit = daysSince === 0 ? 'TODAY' : `${daysSince}D AGO`
 
-  const buildSvg = (bgFill) => `<svg xmlns="http://www.w3.org/2000/svg" width="${CW}" height="${CH}" viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Commitchi pet for ${esc(USERNAME)}">
+  const buildSvg = (bgFill, shell1, shell2) => `<svg xmlns="http://www.w3.org/2000/svg" width="${CW}" height="${CH}" viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Commitchi pet for ${esc(USERNAME)}">
   <defs>
     <linearGradient id="shell" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ff6eb4"/>
-      <stop offset="1" stop-color="#ff9f43"/>
+      <stop offset="0" stop-color="${shell1}"/>
+      <stop offset="1" stop-color="${shell2}"/>
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="${CW}" height="${CH}" rx="22" fill="${bgFill}"/>
@@ -157,8 +157,8 @@ async function main() {
 `
 
   const darkOut = OUT.replace(/\.svg$/, '-dark.svg')
-  writeFileSync(OUT, buildSvg('#f1e8fb'))
-  writeFileSync(darkOut, buildSvg('#0d0d0f'))
+  writeFileSync(OUT, buildSvg('#f1e8fb', '#ff6eb4', '#ff9f43'))
+  writeFileSync(darkOut, buildSvg('#0d0d0f', '#4a4a52', '#2a2a30'))
   console.log(`Wrote ${OUT} + ${darkOut} - ${species} (${state.moodLabel}) lvl ${level} for @${user.login}`)
 }
 
