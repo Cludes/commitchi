@@ -5,14 +5,17 @@ import {
   getHappiness, getHealth, getTotalCommits,
   getMoodLabel, getMoodMessages, getXPProgress, getDailyCommits,
 } from '../utils/petCalculations'
+import { SPECIES_LIST } from '../utils/constants'
 
-export function usePetState(githubData) {
+export function usePetState(githubData, overrideSpecies = null) {
   return useMemo(() => {
     if (!githubData) return null
 
     const { events, topLanguage, user } = githubData
     const hasActivity = events.some(e => e.type === 'PushEvent')
-    const species = getSpecies(topLanguage)
+    const species = overrideSpecies && SPECIES_LIST.includes(overrideSpecies)
+      ? overrideSpecies
+      : getSpecies(topLanguage)
     const daysSince = getDaysSinceLastCommit(events)
     const streak = getCurrentStreak(events)
     const rawCommits = getTotalCommits(events)
@@ -57,5 +60,5 @@ export function usePetState(githubData) {
       avatar: user.avatar_url,
       topLanguage,
     }
-  }, [githubData])
+  }, [githubData, overrideSpecies])
 }

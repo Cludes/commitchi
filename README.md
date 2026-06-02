@@ -5,6 +5,23 @@ Feed it commits. Keep it alive. Don't let it die.
 
 **Live demo:** https://cludes.github.io/commitchi/?u=Cludes
 
+<!-- TODO: add a screenshot or GIF of the pet card here -->
+![Commitchi screenshot placeholder](./commitchi.svg)
+
+---
+
+## Features
+
+- Pixel-art pet on a Game Boy-style LCD inside a Tamagotchi device frame
+- Mood, hunger, health, level, XP, and streak derived from your public commit activity
+- 12-week contribution heatmap (weekday-aligned) and a recent-commits feed
+- Seven species mapped from your top language, with a per-user species override
+- Light / dark theme (follows your OS by default), editable pet name, level-up toast
+- Compare mode: two pets side by side, crown to the happier one
+- Dormant state for inactive accounts, rate-limit countdown, manual refresh, recent searches
+- Accessible: reduced-motion support, focus rings, aria labels
+- Auto-generated light + dark SVG cards for embedding in your GitHub profile README
+
 ---
 
 ## How it works
@@ -140,6 +157,23 @@ npm run dev
 ```
 
 Then open `http://localhost:5173` and enter any GitHub username.
+
+### Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Production build to `dist/` |
+| `npm run lint` | ESLint over the project |
+| `npm run test` | Run the Vitest unit tests once |
+| `npm run test:watch` | Run Vitest in watch mode |
+
+Unit tests cover the pure logic in `src/utils/petCalculations.js` (species, level, XP,
+mood, streak, daily commits, evolution stage). CI (`.github/workflows/ci.yml`) runs lint,
+tests, and build on every push and pull request.
+
+You can pin a species regardless of language with `?species=mooncat` (or the "swap" button
+on the card); the choice is remembered per username.
 
 ---
 

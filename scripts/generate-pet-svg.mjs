@@ -8,6 +8,10 @@ import {
   getEvolutionStage, getMood, getHunger, getHappiness, getHealth,
   getTotalCommits, getMoodLabel, getXPProgress,
 } from '../src/utils/petCalculations.js'
+import {
+  SPECIES_NAMES, STAGE_NAMES, SPECIES_LIST,
+  MOOD_COLORS_LIGHT, MOOD_COLORS_DARK,
+} from '../src/utils/constants.js'
 
 const USERNAME = process.env.COMMITCHI_USER || process.argv[2]
 const OUT = process.env.OUT || 'commitchi.svg'
@@ -18,11 +22,6 @@ if (!USERNAME) {
   process.exit(1)
 }
 
-const SPECIES_NAMES = {
-  hamster: 'Hamster', snake: 'Snake', mooncat: 'Moon Cat', crab: 'Crab',
-  gopher: 'Gopher', gem: 'Gem', blob: 'Blob',
-}
-const STAGE_NAMES = { egg: 'Egg', baby: 'Baby', normal: 'Adult', adult: 'Veteran', elder: 'Elder' }
 // Per-theme palettes. ink = primary text/fill, inkDim = secondary, track = empty bar.
 const LIGHT = {
   page: '#f1e8fb',
@@ -32,10 +31,7 @@ const LIGHT = {
   ink: '#0f380f',
   inkDim: '#2a5a2a',
   track: '#8bac0f',
-  mood: {
-    ecstatic: '#c2185b', happy: '#2a5a2a', content: '#0f380f', hungry: '#9c6a00',
-    sad: '#b5531a', critical: '#c62828', dead: '#555', dormant: '#3a6a8a',
-  },
+  mood: MOOD_COLORS_LIGHT,
 }
 const DARK = {
   page: '#0d0d0f',
@@ -45,10 +41,7 @@ const DARK = {
   ink: '#c8f569',
   inkDim: '#7fae3f',
   track: '#1c3a1c',
-  mood: {
-    ecstatic: '#ff6eb4', happy: '#9bdb4d', content: '#c8f569', hungry: '#ffd43b',
-    sad: '#ff9f43', critical: '#ff6b6b', dead: '#888', dormant: '#74c0fc',
-  },
+  mood: MOOD_COLORS_DARK,
 }
 
 async function gh(path) {
@@ -94,7 +87,8 @@ async function main() {
 
   const evList = Array.isArray(events) ? events : []
   const hasActivity = evList.some((e) => e.type === 'PushEvent')
-  const species = getSpecies(topLanguage)
+  const override = process.env.COMMITCHI_SPECIES
+  const species = override && SPECIES_LIST.includes(override) ? override : getSpecies(topLanguage)
   const daysSince = getDaysSinceLastCommit(evList)
   const streak = getCurrentStreak(evList)
   const effective = getTotalCommits(evList) + user.public_repos * 3

@@ -1,297 +1,47 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SearchForm } from './components/SearchForm'
-import { PetCanvas } from './components/PetCanvas'
-import { StatusBar } from './components/StatusBar'
-import { ActivityFeed } from './components/ActivityFeed'
-import { Heatmap } from './components/Heatmap'
+import { Device } from './components/Device'
+import { PetPanel } from './components/PetPanel'
+import { ShareButton } from './components/ShareButton'
+import { Countdown } from './components/Countdown'
 import { useGitHubData } from './hooks/useGitHubData'
 import { usePetState } from './hooks/usePetState'
+import { readJSON, writeJSON } from './utils/storage'
+import { getInitialTheme, THEME_KEY } from './utils/theme'
+import { SPECIES_LIST } from './utils/constants'
 import './App.css'
-
-const SPECIES_NAMES = {
-  hamster: 'Hamster',
-  snake: 'Snake',
-  mooncat: 'Moon Cat',
-  crab: 'Crab',
-  gopher: 'Gopher',
-  gem: 'Gem',
-  blob: 'Blob',
-}
-
-const STAGE_NAMES = {
-  egg: 'Egg',
-  baby: 'Baby',
-  normal: 'Adult',
-  adult: 'Veteran',
-  elder: 'Elder',
-}
-
-const MOOD_COLORS = {
-  ecstatic: '#ff6eb4',
-  happy: '#306230',
-  content: '#0f380f',
-  hungry: '#c98a00',
-  sad: '#cf6a1f',
-  critical: '#ff4d4d',
-  dead: '#666',
-  dormant: '#3a6a8a',
-}
 
 const RECENT_KEY = 'commitchi:recent'
 const MAX_RECENT = 5
 
-function readJSON(key, fallback) {
+const speciesKey = (u) => `commitchi:species:${u.toLowerCase()}`
+const validSpecies = (s) => (s && SPECIES_LIST.includes(s) ? s : null)
+
+function initialSpecies() {
   try {
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : fallback
+    const params = new URLSearchParams(window.location.search)
+    const q = validSpecies(params.get('species'))
+    if (q) return q
+    const u = params.get('u')
+    if (u) return validSpecies(readJSON(speciesKey(u), null))
   } catch {
-    return fallback
+    // ignore
   }
-}
-
-function writeJSON(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // storage unavailable
-  }
-}
-
-function XpBar({ xp, level }) {
-  return (
-    <div className="xp-block">
-      <div className="xp-track">
-        <div className="xp-fill" style={{ width: `${xp.pct}%` }} />
-      </div>
-      <span className="xp-text">
-        {xp.max ? 'MAX LEVEL' : `XP ${xp.current}/${xp.needed} - NEXT LVL ${level + 1}`}
-      </span>
-    </div>
-  )
-}
-
-// Remounted (via key) whenever the viewed user changes, so it reads the right name.
-function PetName({ username, species }) {
-  const key = `commitchi:name:${username.toLowerCase()}`
-  const [name, setName] = useState(() => readJSON(key, ''))
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(name)
-
-  const save = () => {
-    const trimmed = draft.trim().slice(0, 20)
-    setName(trimmed)
-    writeJSON(key, trimmed)
-    setEditing(false)
-  }
-
-  if (editing) {
-    return (
-      <input
-        className="pet-name-input"
-        value={draft}
-        autoFocus
-        maxLength={20}
-        placeholder={`Name your ${SPECIES_NAMES[species]}`}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={save}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') save()
-          if (e.key === 'Escape') setEditing(false)
-        }}
-      />
-    )
-  }
-
-  return (
-    <button className="pet-name-btn" onClick={() => setEditing(true)} title="Click to rename">
-      {name || '+ name your pet'}
-    </button>
-  )
-}
-
-// Remounted (via key) per user, so msgIndex / heatmap visibility reset naturally.
-function Device({ pet }) {
-  const [msgIndex, setMsgIndex] = useState(0)
-  const [showHeatmap, setShowHeatmap] = useState(true)
-  const petRef = useRef(null)
-
-  const isDead = pet.mood === 'dead'
-  const moodColor = MOOD_COLORS[pet.mood] || '#0f380f'
-  const message = pet.moodMessages[msgIndex % pet.moodMessages.length]
-  const ariaLabel = `${pet.username}'s ${SPECIES_NAMES[pet.species]}, ${pet.moodLabel.replace(/!/g, '').trim().toLowerCase()}, level ${pet.level}`
-
-  return (
-    <div className="device">
-      <div className="device-screen">
-        <div className={`screen-content ${pet.mood === 'critical' ? 'critical-flash' : ''}`}>
-          <div className="pet-header">
-            <div className="pet-name-block">
-              <div className="pet-name-row">
-                {pet.avatar && (
-                  <img
-                    className="pet-avatar"
-                    src={pet.avatar}
-                    alt=""
-                    onError={(e) => { e.currentTarget.style.display = 'none' }}
-                  />
-                )}
-                <span className="pet-username">@{pet.username}</span>
-              </div>
-              <PetName username={pet.username} species={pet.species} />
-              <span className="pet-species">
-                {STAGE_NAMES[pet.stage]} {SPECIES_NAMES[pet.species]}
-              </span>
-            </div>
-            <div className="pet-level-block">
-              <span className="pet-level-label">LVL</span>
-              <span className="pet-level">{pet.level}</span>
-            </div>
-          </div>
-
-          <XpBar xp={pet.xp} level={pet.level} />
-
-          <div className="pet-stage">
-            <PetCanvas
-              ref={petRef}
-              species={pet.species}
-              mood={pet.mood}
-              stage={pet.stage}
-              ariaLabel={ariaLabel}
-            />
-            <div className="pet-mood-block">
-              <span className="pet-mood-dot" style={{ background: moodColor }} />
-              <span className="pet-mood-label" style={{ color: moodColor }}>
-                {pet.moodLabel}
-              </span>
-            </div>
-            <p className="pet-message">{message}</p>
-          </div>
-
-          <div className="stats-block">
-            <StatusBar label="Hunger" value={100 - pet.hunger} />
-            <StatusBar label="Happy" value={pet.happiness} />
-            <StatusBar label="Health" value={pet.health} />
-          </div>
-
-          <div className="streak-row">
-            <div className="streak-item">
-              <span className="streak-value">{pet.streak}</span>
-              <span className="streak-label">streak</span>
-            </div>
-            <div className="streak-divider" />
-            <div className="streak-item">
-              <span className="streak-value">
-                {pet.isDormant ? '-' : pet.daysSince === 0 ? 'TODAY' : `${pet.daysSince}D`}
-              </span>
-              <span className="streak-label">last commit</span>
-            </div>
-            <div className="streak-divider" />
-            <div className="streak-item">
-              <span className="streak-value">{pet.totalCommits}</span>
-              <span className="streak-label">commits</span>
-            </div>
-          </div>
-
-          {showHeatmap && <Heatmap dailyCommits={pet.dailyCommits} />}
-
-          {!isDead && !pet.isDormant && <ActivityFeed activity={pet.recentActivity} />}
-
-          {pet.isDormant && (
-            <div className="death-message">
-              <p>This pet is dormant.</p>
-              <p>No public commit activity found. Push some public code to wake it up.</p>
-            </div>
-          )}
-
-          {isDead && (
-            <div className="death-message">
-              <p>Your pet has passed away.</p>
-              <p>No commits in over 21 days. Push code to revive it.</p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="device-controls">
-        <div className="device-buttons">
-          <button
-            className="dev-btn red"
-            onClick={() => setMsgIndex((i) => i + 1)}
-            aria-label="Next message"
-            title="Next message"
-          />
-          <button
-            className="dev-btn yellow"
-            onClick={() => petRef.current?.feed()}
-            aria-label="Pet your creature"
-            title="Pet / feed"
-          />
-          <button
-            className="dev-btn green"
-            onClick={() => setShowHeatmap((v) => !v)}
-            aria-label="Toggle activity heatmap"
-            title="Toggle heatmap"
-          />
-        </div>
-        <div className="device-speaker">
-          <span /><span /><span />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ShareButton() {
-  const [copied, setCopied] = useState(false)
-
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // clipboard blocked - ignore
-    }
-  }
-
-  return (
-    <button className="share-btn" onClick={handleShare}>
-      {copied ? 'COPIED!' : 'SHARE YOUR PET'}
-    </button>
-  )
-}
-
-function Countdown({ resetAt }) {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000)
-    return () => clearInterval(id)
-  }, [])
-  const secs = Math.max(0, Math.round((resetAt - now) / 1000))
-  const m = Math.floor(secs / 60)
-  const s = secs % 60
-  return <span>try again in {m}m {String(s).padStart(2, '0')}s</span>
-}
-
-function getInitialTheme() {
-  try {
-    const stored = localStorage.getItem('commitchi:theme')
-    if (stored === 'light' || stored === 'dark') return stored
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-  } catch {
-    // storage / matchMedia unavailable
-  }
-  return 'light'
+  return null
 }
 
 export default function App() {
   const { data, loading, error, cachedAt, rateLimitReset, fetchUser } = useGitHubData()
-  const pet = usePetState(data)
+  const [speciesOverride, setSpeciesOverride] = useState(initialSpecies)
+  const pet = usePetState(data, speciesOverride)
   const [theme, setTheme] = useState(getInitialTheme)
   const [recent, setRecent] = useState(() => readJSON(RECENT_KEY, []))
   const [levelUp, setLevelUp] = useState(false)
+
+  const [comparing, setComparing] = useState(false)
+  const [compareInput, setCompareInput] = useState('')
+  const [compareUser, setCompareUser] = useState(null)
+  const [comparePet, setComparePet] = useState(null)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -301,14 +51,13 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('commitchi:theme', theme)
+      localStorage.setItem(THEME_KEY, theme)
     } catch {
       // storage unavailable
     }
   }, [theme])
 
-  // Level-up detection: compare to last-seen level for this user. setState is deferred
-  // (timeout) so it is not a synchronous cascade inside the effect.
+  // Level-up detection (deferred setState so it isn't a synchronous effect cascade).
   useEffect(() => {
     if (!pet) return
     const lvlKey = `commitchi:lvl:${pet.username.toLowerCase()}`
@@ -335,14 +84,46 @@ export default function App() {
   const handleSearch = (username) => {
     const url = new URL(window.location.href)
     url.searchParams.set('u', username)
+    url.searchParams.delete('species')
     window.history.pushState({}, '', url)
     addRecent(username)
+    setSpeciesOverride(validSpecies(readJSON(speciesKey(username), null)))
+    setCompareUser(null)
+    setComparePet(null)
+    setComparing(false)
     fetchUser(username)
   }
 
   const handleRefresh = () => {
     if (pet) fetchUser(pet.username, { force: true })
   }
+
+  const cycleSpecies = () => {
+    if (!pet) return
+    const idx = SPECIES_LIST.indexOf(pet.species)
+    const next = SPECIES_LIST[(idx + 1) % SPECIES_LIST.length]
+    setSpeciesOverride(next)
+    writeJSON(speciesKey(pet.username), next)
+    const url = new URL(window.location.href)
+    url.searchParams.set('species', next)
+    window.history.replaceState({}, '', url)
+  }
+
+  const startCompare = (e) => {
+    e.preventDefault()
+    const u = compareInput.trim()
+    if (u) setCompareUser(u)
+  }
+
+  const clearCompare = () => {
+    setComparing(false)
+    setCompareInput('')
+    setCompareUser(null)
+    setComparePet(null)
+  }
+
+  const primaryWins = compareUser && comparePet ? pet.happiness >= comparePet.happiness : false
+  const compareWins = compareUser && comparePet ? comparePet.happiness > pet.happiness : false
 
   return (
     <div className="app" data-theme={theme}>
@@ -422,11 +203,42 @@ export default function App() {
           </div>
         )}
 
-        {pet && !loading && (
+        {pet && !loading && !compareUser && (
           <>
-            <Device key={pet.username} pet={pet} />
+            <Device key={pet.username} pet={pet} onCycleSpecies={cycleSpecies} />
             <ShareButton />
+            <div className="compare-bar">
+              {!comparing ? (
+                <button className="compare-toggle" onClick={() => setComparing(true)}>
+                  COMPARE WITH...
+                </button>
+              ) : (
+                <form className="compare-form" onSubmit={startCompare}>
+                  <input
+                    className="compare-input"
+                    placeholder="github username"
+                    value={compareInput}
+                    onChange={(e) => setCompareInput(e.target.value)}
+                    autoFocus
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <button className="compare-go" type="submit">VS</button>
+                </form>
+              )}
+            </div>
           </>
+        )}
+
+        {pet && !loading && compareUser && (
+          <div className="compare-wrap">
+            <div className="compare-grid">
+              <Device key={pet.username} pet={pet} crown={primaryWins} />
+              <div className="vs-divider">VS</div>
+              <PetPanel username={compareUser} crown={compareWins} onPet={setComparePet} />
+            </div>
+            <button className="compare-exit" onClick={clearCompare}>EXIT COMPARE</button>
+          </div>
         )}
 
         {!pet && !loading && !error && (
