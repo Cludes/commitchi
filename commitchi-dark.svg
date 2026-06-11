@@ -34,8 +34,8 @@
     <text x="240" y="182" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#c8f569">HEALTH</text><rect x="296" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="311" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="326" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="341" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="356" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="371" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="386" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="401" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="416" y="174" width="13" height="9" fill="#c8f569" stroke="#7fae3f" stroke-width="1"/><rect x="431" y="174" width="13" height="9" fill="#1c3a1c" stroke="#7fae3f" stroke-width="1"/>
 
     <line x1="240" y1="196" x2="470" y2="196" stroke="#7fae3f" stroke-width="1"/>
-    <text x="240" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#c8f569">STREAK 1</text>
-    <text x="350" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#c8f569">LAST TODAY</text>
+    <text x="240" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#c8f569">STREAK 0</text>
+    <text x="350" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#c8f569">LAST 1D AGO</text>
     <text x="240" y="234" font-family="'Courier New',monospace" font-size="10" fill="#7fae3f">107 TOTAL COMMITS</text>
   </g>
 </svg>
