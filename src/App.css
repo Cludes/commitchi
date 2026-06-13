@@ -563,8 +563,48 @@
   filter: grayscale(0.4);
 }
 
-.aura .pet-canvas {
-  filter: drop-shadow(0 0 5px #ffd43b) drop-shadow(0 0 10px rgba(255, 212, 59, 0.6));
+.fx-veteran .pet-canvas {
+  filter: drop-shadow(0 0 3px rgba(116, 192, 252, 0.9));
+}
+
+.fx-elder .pet-canvas {
+  filter: drop-shadow(0 0 5px #ffd43b) drop-shadow(0 0 12px rgba(255, 176, 0, 0.85));
+}
+
+.aura-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 212, 59, 0.4), rgba(255, 176, 0, 0.12) 55%, transparent 72%);
+  z-index: 0;
+  pointer-events: none;
+  animation: auraPulse 1.8s ease-in-out infinite;
+}
+
+.aura-spark {
+  position: absolute;
+  z-index: 0;
+  color: #ffe066;
+  font-family: var(--pixel);
+  font-size: 0.6rem;
+  pointer-events: none;
+  animation: sparkFloat 2.2s ease-in-out infinite;
+}
+
+.aura-spark.s1 { top: 6%; left: 12%; animation-delay: 0s; }
+.aura-spark.s2 { top: 18%; right: 8%; animation-delay: 0.5s; }
+.aura-spark.s3 { bottom: 14%; left: 20%; animation-delay: 1s; }
+
+.fx-elder .pet-canvas { position: relative; z-index: 1; }
+
+@keyframes auraPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.5; }
+  50% { transform: scale(1.15); opacity: 0.95; }
+}
+
+@keyframes sparkFloat {
+  0%, 100% { transform: translateY(0) scale(0.8); opacity: 0.4; }
+  50% { transform: translateY(-6px) scale(1.2); opacity: 1; }
 }
 
 .bounce { animation: bounce 0.4s ease; }
@@ -1142,6 +1182,8 @@
   .ghost-float,
   .bounce,
   .shake,
+  .aura-ring,
+  .aura-spark,
   .sparkles,
   .critical-flash,
   .logo-cursor,

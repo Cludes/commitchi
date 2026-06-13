@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import {
-  getSpriteForState, recolorSprite, getStageOverlay, getStageScale, stageHasAura,
+  getSpriteForState, recolorSprite, getStageOverlay, getStageScale, getStageFx,
 } from '../utils/sprites'
 
 const PIXEL_SIZE = 11
@@ -73,13 +73,22 @@ export const PetCanvas = forwardRef(function PetCanvas(
   const isEgg = stage === 'egg'
   const isFloating = !isDead && !isEgg && mood !== 'critical' && mood !== 'sad'
   const idleClass = interact || (isEgg ? 'egg-wobble' : isFloating ? 'floating' : '')
-  const auraClass = stageHasAura(stage) ? 'aura' : ''
+  const fx = isDead ? null : getStageFx(stage)
+  const fxClass = fx ? `fx-${fx}` : ''
 
   return (
     <div
-      className={`pet-canvas-wrapper ${idleClass} ${isDead ? 'ghost-float' : ''} ${auraClass}`}
+      className={`pet-canvas-wrapper ${idleClass} ${isDead ? 'ghost-float' : ''} ${fxClass}`}
       onClick={poke}
     >
+      {fx === 'elder' && (
+        <>
+          <span className="aura-ring" aria-hidden="true" />
+          <span className="aura-spark s1" aria-hidden="true">*</span>
+          <span className="aura-spark s2" aria-hidden="true">*</span>
+          <span className="aura-spark s3" aria-hidden="true">*</span>
+        </>
+      )}
       <canvas ref={canvasRef} className="pet-canvas" role="img" aria-label={ariaLabel} />
       {mood === 'ecstatic' && <div className="sparkles">+ + +</div>}
       {hearts > 0 && <div key={hearts} className="pet-heart">&lt;3</div>}

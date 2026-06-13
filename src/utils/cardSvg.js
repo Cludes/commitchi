@@ -2,7 +2,7 @@
 // generator (scripts/generate-pet-svg.mjs) and by the in-app PNG download, so the
 // two renderings can't drift.
 import {
-  getSpriteForState, recolorSprite, getStageOverlay, getStageScale, stageHasAura,
+  getSpriteForState, recolorSprite, getStageOverlay, getStageScale, getStageFx,
 } from './sprites.js'
 import { SPECIES_NAMES, STAGE_NAMES, MOOD_COLORS_LIGHT, MOOD_COLORS_DARK } from './constants.js'
 
@@ -57,6 +57,28 @@ function petPixels(species, mood, stage, petX, petY) {
   return out
 }
 
+// Stage aura/glow drawn behind the pet. Elder = layered gold glow + sparkles.
+function stageAura(fx, cx, cy) {
+  if (fx === 'veteran') {
+    return `<circle cx="${cx}" cy="${cy}" r="58" fill="#74c0fc" opacity="0.10"/>`
+  }
+  if (fx === 'elder') {
+    const spark = (x, y, s) =>
+      `<path d="M ${x} ${y - s} L ${x + s} ${y} L ${x} ${y + s} L ${x - s} ${y} Z" fill="#ffe066"/>`
+    return [
+      `<circle cx="${cx}" cy="${cy}" r="78" fill="#ffd43b" opacity="0.08"/>`,
+      `<circle cx="${cx}" cy="${cy}" r="60" fill="#ffd43b" opacity="0.14"/>`,
+      `<circle cx="${cx}" cy="${cy}" r="44" fill="#ffd43b" opacity="0.10"/>`,
+      spark(cx - 64, cy - 30, 5),
+      spark(cx + 66, cy - 18, 6),
+      spark(cx - 58, cy + 40, 4),
+      spark(cx + 60, cy + 46, 5),
+      spark(cx + 8, cy - 70, 5),
+    ].join('')
+  }
+  return ''
+}
+
 // state: { username, species, stage, mood, moodLabel, level, xp, hunger, happiness,
 //          health, streak, daysSince, totalCommits }
 export function buildCardSvg(state, theme) {
@@ -76,9 +98,7 @@ export function buildCardSvg(state, theme) {
   const lastCommit = daysSince === 0 ? 'TODAY' : `${daysSince}D AGO`
   const moodColor = t.mood[mood] || t.ink
   const pixels = petPixels(species, mood, stage, petX, petY)
-  const aura = stageHasAura(stage)
-    ? `<circle cx="${petX + 72}" cy="${petY + 72}" r="62" fill="#ffd43b" opacity="0.16"/>`
-    : ''
+  const aura = stageAura(getStageFx(stage), petX + 72, petY + 72)
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${CW}" height="${CH}" viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Commitchi pet for ${esc(username)}">
   <defs>

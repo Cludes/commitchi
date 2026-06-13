@@ -8,8 +8,10 @@ const PAL = {
   W: '#ffffff', // white (eyes, teeth)
   K: '#000000', // black (pupils)
   R: '#ff5d8f', // pink accent (tongue/nose)
-  Y: '#ffd43b', // yellow accent
+  Y: '#ffd43b', // yellow / gold accent
   G: '#306230', // dark green accent
+  B: '#4dabf7', // blue jewel accent
+  C: '#e64980', // crimson jewel accent
 }
 
 const px = (str) => str.split('').map((c) => (c in PAL ? PAL[c] : null))
@@ -262,16 +264,16 @@ export function getSpriteForState(species, mood, stage) {
 
 // --- Evolution stage decorations (drawn over the base sprite, fixed colours) ---
 
-// Veteran: a sleek visor over the eyes.
+// Veteran: a sleek wraparound visor with white glints.
 const SHADES = grid([
   '................',
   '................',
   '................',
   '................',
   '................',
-  '................',
-  '..KKKKK..KKKKK..',
-  '................',
+  '..KKKKKKKKKKKK..',
+  '..KKWKK..KKWKK..',
+  '...KK......KK...',
   '................',
   '................',
   '................',
@@ -282,12 +284,12 @@ const SHADES = grid([
   '................',
 ])
 
-// Elder: a small gold crown above the head.
+// Elder: a tall jeweled gold crown above the head.
 const CROWN = grid([
-  '.....Y.Y.Y.Y....',
-  '.....YYYYYYY....',
-  '................',
-  '................',
+  '.....Y.Y.Y......',
+  '.....YYYYY......',
+  '.....YCYBY......',
+  '.....YYYYY......',
   '................',
   '................',
   '................',
@@ -313,8 +315,11 @@ export function getStageScale(stage) {
   return stage === 'baby' ? 0.72 : 1
 }
 
-export function stageHasAura(stage) {
-  return stage === 'elder'
+// Visual effect tier for a stage: elder (intense aura) or veteran (subtle glow).
+export function getStageFx(stage) {
+  if (stage === 'elder') return 'elder'
+  if (stage === 'adult') return 'veteran'
+  return null
 }
 
 export function getSpriteColors(species) {
