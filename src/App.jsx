@@ -14,7 +14,29 @@ import { downloadPetCard } from './utils/downloadCard'
 import './App.css'
 
 const RECENT_KEY = 'commitchi:recent'
+const SHELL_KEY = 'commitchi:shell'
 const MAX_RECENT = 5
+
+const EXAMPLE_USERS = ['torvalds', 'gaearon', 'sindresorhus', 'Cludes']
+
+// Device shell colour options (web personalization).
+const SHELLS = {
+  sunset: 'linear-gradient(150deg, #ff6eb4 0%, #ff9f43 100%)',
+  mint: 'linear-gradient(150deg, #38f9d7 0%, #43e97b 100%)',
+  ocean: 'linear-gradient(150deg, #4facfe 0%, #00f2fe 100%)',
+  grape: 'linear-gradient(150deg, #a18cd1 0%, #fbc2eb 100%)',
+  charcoal: 'linear-gradient(150deg, #5a5a64 0%, #2a2a30 100%)',
+}
+const SHELL_SWATCH = {
+  sunset: '#ff6eb4', mint: '#43e97b', ocean: '#4facfe', grape: '#a18cd1', charcoal: '#4a4a52',
+}
+const initialShell = () => {
+  try {
+    const s = localStorage.getItem(SHELL_KEY)
+    if (s && s in SHELLS) return s
+  } catch { /* ignore */ }
+  return 'sunset'
+}
 
 const speciesKey = (u) => `commitchi:species:${u.toLowerCase()}`
 const validSpecies = (s) => (s && SPECIES_LIST.includes(s) ? s : null)
@@ -54,6 +76,7 @@ export default function App() {
   // On-screen pet may show a preview stage; `pet` stays real for download / share.
   const displayPet = useMemo(() => applyStagePreview(pet, previewStage), [pet, previewStage])
   const [theme, setTheme] = useState(getInitialTheme)
+  const [shell, setShell] = useState(initialShell)
   const [recent, setRecent] = useState(() => readJSON(RECENT_KEY, []))
   const [levelUp, setLevelUp] = useState(false)
 
@@ -75,6 +98,14 @@ export default function App() {
       // storage unavailable
     }
   }, [theme])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SHELL_KEY, shell)
+    } catch {
+      // storage unavailable
+    }
+  }, [shell])
 
   // Level-up detection (deferred setState so it isn't a synchronous effect cascade).
   useEffect(() => {
@@ -157,7 +188,21 @@ export default function App() {
   const compareWins = compareUser && comparePet ? comparePet.happiness > pet.happiness : false
 
   return (
-    <div className="app" data-theme={theme}>
+    <div className="app" data-theme={theme} style={{ '--shell-grad': SHELLS[shell] }}>
+      <div className="shell-picker" role="group" aria-label="Device colour">
+        {Object.keys(SHELLS).map((name) => (
+          <button
+            key={name}
+            className={`shell-swatch ${shell === name ? 'active' : ''}`}
+            style={{ background: SHELL_SWATCH[name] }}
+            onClick={() => setShell(name)}
+            aria-label={name}
+            aria-pressed={shell === name}
+            title={name}
+          />
+        ))}
+      </div>
+
       <div className="theme-toggle" role="group" aria-label="Theme">
         <button
           className={theme === 'light' ? 'active' : ''}
@@ -301,10 +346,29 @@ export default function App() {
         )}
 
         {!pet && !loading && !error && (
-          <div className="empty-state">
+          <div className="landing">
             <div className="empty-egg">&#9671;</div>
-            <p>ENTER A GITHUB USERNAME TO HATCH YOUR PET</p>
-            <p className="empty-hint">It lives or dies based on your commit activity.</p>
+            <p className="landing-tag">A digital pet that lives or dies by your commits.</p>
+            <p className="landing-sub">Enter your GitHub username above to hatch yours.</p>
+
+            <div className="landing-examples">
+              <span className="landing-examples-label">OR SEE IT LIVE</span>
+              <div className="landing-chips">
+                {EXAMPLE_USERS.map((u) => (
+                  <button key={u} className="recent-chip" onClick={() => handleSearch(u)}>
+                    {u}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="landing-embed">
+              <span className="landing-embed-label">ADD IT TO YOUR PROFILE README</span>
+              <code className="landing-code">
+                ![my pet](https://raw.githubusercontent.com/Cludes/commitchi/master/commitchi.svg)
+              </code>
+              <span className="landing-embed-hint">Fork the repo to get your own auto-updating card.</span>
+            </div>
           </div>
         )}
       </main>

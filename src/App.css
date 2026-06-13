@@ -56,6 +56,28 @@
   transition: background-color 0.3s, color 0.3s;
 }
 
+/* ---- Shell colour picker ---- */
+.shell-picker {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.shell-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-border);
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.shell-swatch:hover { transform: scale(1.15); }
+.shell-swatch.active { border-color: var(--page-text-strong); transform: scale(1.15); }
+
 /* ---- Theme toggle ---- */
 .theme-toggle {
   position: absolute;
@@ -379,7 +401,7 @@
 .device {
   width: 100%;
   max-width: 360px;
-  background: linear-gradient(150deg, #ff6eb4 0%, #ff9f43 100%);
+  background: var(--shell-grad, linear-gradient(150deg, #ff6eb4 0%, #ff9f43 100%));
   border: 6px solid #222;
   border-radius: 46px 46px 50% 50% / 32px 32px 44px 44px;
   padding: 2rem 1.6rem 1.4rem;
@@ -1031,6 +1053,82 @@
 .empty-hint {
   font-family: var(--mono);
   font-size: 0.72rem;
+  color: var(--page-text);
+}
+
+/* ---- Landing / showcase ---- */
+.landing {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.5rem 0 1rem;
+}
+
+.landing-tag {
+  font-family: var(--pixel);
+  font-size: 0.65rem;
+  line-height: 1.7;
+  color: var(--page-text-strong);
+  max-width: 320px;
+}
+
+.landing-sub {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--page-text);
+}
+
+.landing-examples {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.landing-examples-label,
+.landing-embed-label {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  letter-spacing: 0.1em;
+  color: var(--page-text);
+}
+
+.landing-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.landing-embed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  width: 100%;
+}
+
+.landing-code {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  color: var(--input-text);
+  padding: 0.6rem 0.7rem;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.landing-embed-hint {
+  font-family: var(--mono);
+  font-size: 0.68rem;
   color: var(--page-text);
 }
 

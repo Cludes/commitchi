@@ -71,11 +71,28 @@ Tap the SHARE YOUR PET button to copy a direct link to your creature.
 
 ---
 
-## Put your pet on your GitHub profile
+## Zero-setup card (hosted)
 
-Your profile README can't run JavaScript, but it can show an image. This repo ships
-a GitHub Action that regenerates an SVG of your pet once a day and commits it as
-`commitchi.svg`, so you can embed a live, self-updating pet on your profile.
+The fastest way to embed your pet anywhere - no fork, no setup. Deploy this repo to
+[Vercel](https://vercel.com) (it auto-detects the Vite app and the `api/` function),
+then anyone can embed their own card with one line:
+
+```markdown
+![my commitchi](https://YOUR-PROJECT.vercel.app/api/card?u=YOUR_USERNAME)
+```
+
+Query params: `u` (required), `theme=dark`, `species=mooncat`. Set a `GITHUB_TOKEN`
+env var in your Vercel project to raise the GitHub API rate limit. Cards are edge-cached
+for 30 minutes. The endpoint lives in [`api/card.mjs`](api/card.mjs) and reuses the same
+card builder as everything else.
+
+---
+
+## Put your pet on your GitHub profile (no hosting)
+
+Prefer not to host anything? Your profile README can't run JavaScript, but it can show
+an image. This repo ships a GitHub Action that regenerates an SVG of your pet once a day
+and commits it as `commitchi.svg`, so you can embed a live, self-updating pet on your profile.
 
 **1. Fork this repo** (see below) so the Action runs under your account.
 
@@ -177,7 +194,18 @@ mood, streak, daily commits, evolution stage). CI (`.github/workflows/ci.yml`) r
 tests, and build on every push and pull request.
 
 You can pin a species regardless of language with `?species=mooncat` (or the "swap" button
-on the card); the choice is remembered per username.
+on the card); the choice is remembered per username. You can also preview any evolution
+stage with `?stage=elder` / `?level=7` or the on-card PREVIEW chips (preview is visual only -
+it does not change your real card).
+
+---
+
+## Roadmap
+
+- **Leaderboard / hall of fame** - a public board of the liveliest pets (longest streaks,
+  highest levels, rarest species). This needs a small backend with a datastore (e.g. Vercel
+  KV / Upstash) and write-side abuse protection, so it is planned as a follow-up rather than
+  part of the static app.
 
 ---
 

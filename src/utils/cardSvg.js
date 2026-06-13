@@ -79,6 +79,31 @@ function stageAura(fx, cx, cy) {
   return ''
 }
 
+// A minimal card showing a short message (used by the hosted endpoint for errors).
+export function buildErrorCard(message, theme = LIGHT_THEME) {
+  const W = 500
+  const H = 260
+  const PAD = 14
+  const CW = W + PAD * 2
+  const CH = H + PAD * 2
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${CW}" height="${CH}" viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Commitchi - ${esc(message)}">
+  <defs>
+    <linearGradient id="shell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${theme.shell1}"/>
+      <stop offset="1" stop-color="${theme.shell2}"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="${CW}" height="${CH}" rx="22" fill="${theme.page}"/>
+  <g transform="translate(${PAD}, ${PAD})">
+    <rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="26" fill="url(#shell)" stroke="#222" stroke-width="4"/>
+    <rect x="16" y="16" width="${W - 32}" height="${H - 32}" rx="12" fill="${theme.screen}" stroke="#333" stroke-width="3"/>
+    <text x="${W / 2}" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="18" font-weight="bold" letter-spacing="2" fill="${theme.ink}">COMMITCHI</text>
+    <text x="${W / 2}" y="155" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" fill="${theme.inkDim}">${esc(message)}</text>
+  </g>
+</svg>
+`
+}
+
 // state: { username, species, stage, mood, moodLabel, level, xp, hunger, happiness,
 //          health, streak, daysSince, totalCommits }
 export function buildCardSvg(state, theme) {
