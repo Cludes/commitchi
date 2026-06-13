@@ -4,6 +4,7 @@ import {
   getLevel, getEvolutionStage, getMood, getHunger,
   getHappiness, getHealth, getTotalCommits,
   getMoodLabel, getMoodMessages, getXPProgress, getDailyCommits,
+  getAchievements,
 } from '../utils/petCalculations'
 import { SPECIES_LIST } from '../utils/constants'
 
@@ -11,7 +12,7 @@ export function usePetState(githubData, overrideSpecies = null) {
   return useMemo(() => {
     if (!githubData) return null
 
-    const { events, topLanguage, user } = githubData
+    const { events, topLanguage, user, languageCount = 0 } = githubData
     const hasActivity = events.some(e => e.type === 'PushEvent')
     const species = overrideSpecies && SPECIES_LIST.includes(overrideSpecies)
       ? overrideSpecies
@@ -28,6 +29,8 @@ export function usePetState(githubData, overrideSpecies = null) {
     const health = getHealth(mood)
     const xp = getXPProgress(effectiveCommits)
     const dailyCommits = getDailyCommits(events)
+    const totalCommits = rawCommits + user.public_repos
+    const achievements = getAchievements({ totalCommits, streak, level, languageCount })
 
     const recentActivity = events
       .filter(e => e.type === 'PushEvent')
@@ -53,7 +56,8 @@ export function usePetState(githubData, overrideSpecies = null) {
       xp,
       streak,
       daysSince,
-      totalCommits: rawCommits + user.public_repos,
+      totalCommits,
+      achievements,
       dailyCommits,
       recentActivity,
       username: user.login,

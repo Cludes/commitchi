@@ -260,6 +260,63 @@ export function getSpriteForState(species, mood, stage) {
   return set.sad
 }
 
+// --- Evolution stage decorations (drawn over the base sprite, fixed colours) ---
+
+// Veteran: a sleek visor over the eyes.
+const SHADES = grid([
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '..KKKKK..KKKKK..',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+])
+
+// Elder: a small gold crown above the head.
+const CROWN = grid([
+  '.....Y.Y.Y.Y....',
+  '.....YYYYYYY....',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+])
+
+export function getStageOverlay(stage) {
+  if (stage === 'adult') return SHADES
+  if (stage === 'elder') return CROWN
+  return null
+}
+
+// Babies render smaller than full-grown pets.
+export function getStageScale(stage) {
+  return stage === 'baby' ? 0.72 : 1
+}
+
+export function stageHasAura(stage) {
+  return stage === 'elder'
+}
+
 export function getSpriteColors(species) {
   const map = {
     hamster: { primary: '#f4a460', secondary: '#ffe0b2', outline: '#8b5e3c' },

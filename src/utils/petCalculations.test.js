@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   getSpecies, getLevel, getXPProgress, getMood, getCurrentStreak,
   getDailyCommits, getEvolutionStage, getHealth, getMoodLabel, getHappiness,
+  getAchievements,
 } from './petCalculations'
 
 // Build a PushEvent N days before now (optionally with a commit count).
@@ -177,6 +178,38 @@ describe('getHappiness', () => {
 
   it('defaults mood to happy', () => {
     expect(getHappiness(0)).toBe(60)
+  })
+})
+
+describe('getAchievements', () => {
+  const ids = (list) => list.filter((a) => a.earned).map((a) => a.id)
+
+  it('earns nothing for a brand-new empty account', () => {
+    expect(ids(getAchievements({ totalCommits: 0, streak: 0, level: 1, languageCount: 0 }))).toEqual([])
+  })
+
+  it('earns commit + streak + polyglot milestones at the right thresholds', () => {
+    const a = getAchievements({ totalCommits: 150, streak: 8, level: 4, languageCount: 3 })
+    const earned = ids(a)
+    expect(earned).toContain('first')
+    expect(earned).toContain('streak7')
+    expect(earned).toContain('c100')
+    expect(earned).toContain('polyglot')
+    expect(earned).not.toContain('streak30')
+    expect(earned).not.toContain('c1000')
+    expect(earned).not.toContain('maxlevel')
+  })
+
+  it('earns max level and 30-day streak only at the top thresholds', () => {
+    const a = getAchievements({ totalCommits: 1000, streak: 30, level: 8, languageCount: 5 })
+    const earned = ids(a)
+    expect(earned).toContain('streak30')
+    expect(earned).toContain('c1000')
+    expect(earned).toContain('maxlevel')
+  })
+
+  it('handles no arguments without throwing', () => {
+    expect(Array.isArray(getAchievements())).toBe(true)
   })
 })
 

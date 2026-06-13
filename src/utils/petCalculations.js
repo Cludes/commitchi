@@ -143,6 +143,19 @@ export function getMoodLabel(mood) {
   return map[mood] || mood
 }
 
+// Milestone achievements derived from a pet's stats. `short` is the badge label.
+export function getAchievements({ totalCommits = 0, streak = 0, level = 1, languageCount = 0 } = {}) {
+  return [
+    { id: 'first', short: 'GIT', label: 'First Commit', earned: totalCommits >= 1 },
+    { id: 'streak7', short: '7D', label: '7-Day Streak', earned: streak >= 7 },
+    { id: 'streak30', short: '30D', label: '30-Day Streak', earned: streak >= 30 },
+    { id: 'c100', short: '100', label: '100 Commits', earned: totalCommits >= 100 },
+    { id: 'c1000', short: '1K', label: '1000 Commits', earned: totalCommits >= 1000 },
+    { id: 'polyglot', short: 'POLY', label: 'Polyglot (3+ langs)', earned: languageCount >= 3 },
+    { id: 'maxlevel', short: 'MAX', label: 'Max Level', earned: level >= 8 },
+  ]
+}
+
 // Returns an array of message variants for a mood (cycled by the device button).
 export function getMoodMessages(mood, species) {
   const name = species.charAt(0).toUpperCase() + species.slice(1)

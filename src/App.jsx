@@ -9,6 +9,7 @@ import { usePetState } from './hooks/usePetState'
 import { readJSON, writeJSON } from './utils/storage'
 import { getInitialTheme, THEME_KEY } from './utils/theme'
 import { SPECIES_LIST } from './utils/constants'
+import { downloadPetCard } from './utils/downloadCard'
 import './App.css'
 
 const RECENT_KEY = 'commitchi:recent'
@@ -206,7 +207,12 @@ export default function App() {
         {pet && !loading && !compareUser && (
           <>
             <Device key={pet.username} pet={pet} onCycleSpecies={cycleSpecies} />
-            <ShareButton />
+            <div className="share-row">
+              <ShareButton />
+              <button className="share-btn" onClick={() => downloadPetCard(pet, theme)}>
+                DOWNLOAD PNG
+              </button>
+            </div>
             <div className="compare-bar">
               {!comparing ? (
                 <button className="compare-toggle" onClick={() => setComparing(true)}>

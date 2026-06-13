@@ -4,6 +4,7 @@ import { StatusBar } from './StatusBar'
 import { ActivityFeed } from './ActivityFeed'
 import { Heatmap } from './Heatmap'
 import { PetName } from './PetName'
+import { Achievements } from './Achievements'
 import { SPECIES_NAMES, STAGE_NAMES, MOOD_COLORS_LIGHT } from '../utils/constants'
 
 function XpBar({ xp, level }) {
@@ -110,6 +111,8 @@ export function Device({ pet, crown = false, onCycleSpecies = null }) {
             </div>
 
             {showHeatmap && <Heatmap dailyCommits={pet.dailyCommits} />}
+
+            <Achievements achievements={pet.achievements} />
 
             {!isDead && !pet.isDormant && <ActivityFeed activity={pet.recentActivity} />}
 

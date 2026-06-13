@@ -14,10 +14,14 @@ Feed it commits. Keep it alive. Don't let it die.
 
 - Pixel-art pet on a Game Boy-style LCD inside a Tamagotchi device frame
 - Mood, hunger, health, level, XP, and streak derived from your public commit activity
+- **Evolutions**: egg, then a smaller baby, adult, a veteran with shades, and an elder with a crown + aura, as your level climbs
+- **Achievements**: earn badges for streaks, commit counts, polyglot, and max level
 - 12-week contribution heatmap (weekday-aligned) and a recent-commits feed
 - Seven species mapped from your top language, with a per-user species override
 - Light / dark theme (follows your OS by default), editable pet name, level-up toast
+- **Idle animations**: gentle float/sway, egg wobble, feed hearts, ecstatic sparkles
 - Compare mode: two pets side by side, crown to the happier one
+- **Download** your pet card as a PNG, or share a direct link
 - Dormant state for inactive accounts, rate-limit countdown, manual refresh, recent searches
 - Accessible: reduced-motion support, focus rings, aria labels
 - Auto-generated light + dark SVG cards for embedding in your GitHub profile README

@@ -87,8 +87,9 @@ export function useGitHubData() {
         }
       }
       const topLanguage = Object.entries(langCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+      const languageCount = Object.keys(langCounts).length
 
-      const payload = { user, events: Array.isArray(events) ? events : [], repos, topLanguage }
+      const payload = { user, events: Array.isArray(events) ? events : [], repos, topLanguage, languageCount }
       setData(payload)
       setCachedAt(null)
       writeCache(username, { data: payload })
