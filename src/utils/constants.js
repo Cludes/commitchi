@@ -13,6 +13,8 @@ export const SPECIES_NAMES = {
 
 export const SPECIES_LIST = ['hamster', 'snake', 'mooncat', 'crab', 'gopher', 'gem', 'blob']
 
+export const STAGE_LIST = ['egg', 'baby', 'normal', 'adult', 'elder']
+
 export const STAGE_NAMES = {
   egg: 'Egg',
   baby: 'Baby',

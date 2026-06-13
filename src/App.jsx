@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SearchForm } from './components/SearchForm'
 import { Device } from './components/Device'
 import { PetPanel } from './components/PetPanel'
@@ -8,7 +8,8 @@ import { useGitHubData } from './hooks/useGitHubData'
 import { usePetState } from './hooks/usePetState'
 import { readJSON, writeJSON } from './utils/storage'
 import { getInitialTheme, THEME_KEY } from './utils/theme'
-import { SPECIES_LIST } from './utils/constants'
+import { SPECIES_LIST, STAGE_LIST, STAGE_NAMES } from './utils/constants'
+import { applyStagePreview, getEvolutionStage } from './utils/petCalculations'
 import { downloadPetCard } from './utils/downloadCard'
 import './App.css'
 
@@ -31,10 +32,27 @@ function initialSpecies() {
   return null
 }
 
+// Preview stage from ?stage= (named) or ?level= (1-8). Visual preview only.
+function initialPreviewStage() {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const s = params.get('stage')
+    if (s && STAGE_LIST.includes(s)) return s
+    const lv = parseInt(params.get('level'), 10)
+    if (lv >= 1 && lv <= 8) return getEvolutionStage(lv)
+  } catch {
+    // ignore
+  }
+  return null
+}
+
 export default function App() {
   const { data, loading, error, cachedAt, rateLimitReset, fetchUser } = useGitHubData()
   const [speciesOverride, setSpeciesOverride] = useState(initialSpecies)
   const pet = usePetState(data, speciesOverride)
+  const [previewStage, setPreviewStage] = useState(initialPreviewStage)
+  // On-screen pet may show a preview stage; `pet` stays real for download / share.
+  const displayPet = useMemo(() => applyStagePreview(pet, previewStage), [pet, previewStage])
   const [theme, setTheme] = useState(getInitialTheme)
   const [recent, setRecent] = useState(() => readJSON(RECENT_KEY, []))
   const [levelUp, setLevelUp] = useState(false)
@@ -86,13 +104,25 @@ export default function App() {
     const url = new URL(window.location.href)
     url.searchParams.set('u', username)
     url.searchParams.delete('species')
+    url.searchParams.delete('stage')
+    url.searchParams.delete('level')
     window.history.pushState({}, '', url)
     addRecent(username)
     setSpeciesOverride(validSpecies(readJSON(speciesKey(username), null)))
+    setPreviewStage(null)
     setCompareUser(null)
     setComparePet(null)
     setComparing(false)
     fetchUser(username)
+  }
+
+  const setPreview = (stage) => {
+    setPreviewStage(stage)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('level')
+    if (stage) url.searchParams.set('stage', stage)
+    else url.searchParams.delete('stage')
+    window.history.replaceState({}, '', url)
   }
 
   const handleRefresh = () => {
@@ -206,7 +236,30 @@ export default function App() {
 
         {pet && !loading && !compareUser && (
           <>
-            <Device key={pet.username} pet={pet} onCycleSpecies={cycleSpecies} />
+            <Device key={pet.username} pet={displayPet} onCycleSpecies={cycleSpecies} />
+
+            {previewStage && (
+              <div className="preview-note">PREVIEW - your real card is unchanged</div>
+            )}
+            <div className="preview-bar" role="group" aria-label="Preview evolution stage">
+              <span className="preview-label">PREVIEW</span>
+              {STAGE_LIST.map((s) => (
+                <button
+                  key={s}
+                  className={`preview-chip ${previewStage === s ? 'active' : ''}`}
+                  onClick={() => setPreview(s)}
+                >
+                  {STAGE_NAMES[s]}
+                </button>
+              ))}
+              <button
+                className={`preview-chip ${!previewStage ? 'active' : ''}`}
+                onClick={() => setPreview(null)}
+              >
+                LIVE
+              </button>
+            </div>
+
             <div className="share-row">
               <ShareButton />
               <button className="share-btn" onClick={() => downloadPetCard(pet, theme)}>

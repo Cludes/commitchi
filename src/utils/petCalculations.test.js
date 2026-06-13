@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   getSpecies, getLevel, getXPProgress, getMood, getCurrentStreak,
   getDailyCommits, getEvolutionStage, getHealth, getMoodLabel, getHappiness,
-  getAchievements,
+  getAchievements, applyStagePreview,
 } from './petCalculations'
 
 // Build a PushEvent N days before now (optionally with a commit count).
@@ -210,6 +210,35 @@ describe('getAchievements', () => {
 
   it('handles no arguments without throwing', () => {
     expect(Array.isArray(getAchievements())).toBe(true)
+  })
+})
+
+describe('applyStagePreview', () => {
+  const pet = { stage: 'normal', level: 3, xp: { pct: 10, current: 1, needed: 10, max: false }, mood: 'happy', species: 'hamster' }
+
+  it('returns the pet untouched when no preview stage', () => {
+    expect(applyStagePreview(pet, null)).toBe(pet)
+    expect(applyStagePreview(pet, undefined)).toBe(pet)
+    expect(applyStagePreview(pet, 'bogus')).toBe(pet)
+  })
+
+  it('overrides stage and aligns level/xp for the preview', () => {
+    const elder = applyStagePreview(pet, 'elder')
+    expect(elder.stage).toBe('elder')
+    expect(elder.level).toBeGreaterThanOrEqual(7)
+    expect(getEvolutionStage(elder.level)).toBe('elder')
+  })
+
+  it('does not mutate the original pet or its non-stage fields', () => {
+    const baby = applyStagePreview(pet, 'baby')
+    expect(pet.stage).toBe('normal')
+    expect(baby.mood).toBe('happy')
+    expect(baby.species).toBe('hamster')
+    expect(baby.stage).toBe('baby')
+  })
+
+  it('handles a null pet', () => {
+    expect(applyStagePreview(null, 'elder')).toBe(null)
   })
 })
 

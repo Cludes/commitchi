@@ -823,6 +823,48 @@
   justify-content: center;
 }
 
+/* ---- Preview evolution ---- */
+.preview-note {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--pink);
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  margin-top: -0.4rem;
+}
+
+.preview-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.preview-label {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  letter-spacing: 0.08em;
+  color: var(--page-text);
+}
+
+.preview-chip {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  color: var(--page-text-strong);
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.preview-chip:hover { border-color: var(--pink); color: var(--pink); }
+.preview-chip.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+
 /* ---- Achievements ---- */
 .achievements { display: flex; flex-direction: column; gap: 0.35rem; }
 

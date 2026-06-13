@@ -83,6 +83,17 @@ export function getDailyCommits(events) {
   return counts
 }
 
+// Representative commit totals for each stage, used only for visual previews.
+const STAGE_PREVIEW_COMMITS = { egg: 5, baby: 30, normal: 120, adult: 700, elder: 3000 }
+
+// Returns a copy of a pet showing the given stage (level + xp adjusted to match) for
+// PREVIEW only. Does not touch real stats, mood, achievements, or the profile card.
+export function applyStagePreview(pet, stage) {
+  if (!pet || !stage || !(stage in STAGE_PREVIEW_COMMITS)) return pet
+  const commits = STAGE_PREVIEW_COMMITS[stage]
+  return { ...pet, stage, level: getLevel(commits), xp: getXPProgress(commits) }
+}
+
 export function getEvolutionStage(level) {
   if (level <= 1) return 'egg'
   if (level <= 2) return 'baby'
