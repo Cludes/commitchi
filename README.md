@@ -73,18 +73,32 @@ Tap the SHARE YOUR PET button to copy a direct link to your creature.
 
 ## Zero-setup card (hosted)
 
-The fastest way to embed your pet anywhere - no fork, no setup. Deploy this repo to
-[Vercel](https://vercel.com) (it auto-detects the Vite app and the `api/` function),
-then anyone can embed their own card with one line:
+The fastest way to embed your pet anywhere - no fork, no setup. Once deployed, anyone
+embeds their own card with one line:
 
 ```markdown
-![my commitchi](https://YOUR-PROJECT.vercel.app/api/card?u=YOUR_USERNAME)
+![my commitchi](https://YOUR-PROJECT.pages.dev/api/card?u=YOUR_USERNAME)
 ```
 
-Query params: `u` (required), `theme=dark`, `species=mooncat`. Set a `GITHUB_TOKEN`
-env var in your Vercel project to raise the GitHub API rate limit. Cards are edge-cached
-for 30 minutes. The endpoint lives in [`api/card.mjs`](api/card.mjs) and reuses the same
-card builder as everything else.
+Query params: `u` (required), `theme=dark`, `species=mooncat`. Cards are edge-cached for
+30 minutes. The same card builder powers the app, the profile SVG, and this endpoint.
+
+### Deploy to Cloudflare Pages
+
+1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) - Workers & Pages - Create -
+   Pages - Connect to Git, and pick this repo.
+2. Build settings:
+   - **Framework preset:** Vite
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+3. (Optional) Settings - Environment variables: add `GITHUB_TOKEN` (a GitHub PAT, no scopes
+   needed) to raise the API rate limit from 60/hr to 5000/hr.
+4. Deploy. The function in [`functions/api/card.js`](functions/api/card.js) is auto-routed
+   to `/api/card`, so your card is at `https://<project>.pages.dev/api/card?u=USERNAME`.
+
+> Also works on Vercel via [`api/card.mjs`](api/card.mjs) - import the repo at
+> [vercel.com](https://vercel.com) (it auto-detects Vite + the `api/` function); the URL
+> is then `https://<project>.vercel.app/api/card?u=USERNAME`.
 
 ---
 

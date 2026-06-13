@@ -18,4 +18,10 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // Cloudflare Pages Functions / serverless handlers: not React components.
+    files: ['functions/**/*.js'],
+    languageOptions: { globals: { ...globals.browser, ...globals.worker } },
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
 ])
