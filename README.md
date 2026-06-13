@@ -9,6 +9,29 @@ Feed it commits. Keep it alive. Don't let it die.
 
 ---
 
+## Quick start
+
+**Try it:** open [commitchi.pages.dev](https://commitchi.pages.dev) and type any GitHub username.
+
+**Put your pet in your README** - no fork, no setup, just change the username:
+
+```markdown
+![my commitchi](https://commitchi.pages.dev/api/card?u=YOUR_USERNAME)
+```
+
+For a profile README that adapts to GitHub's light/dark theme:
+
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://commitchi.pages.dev/api/card?u=YOUR_USERNAME&theme=dark">
+  <img alt="My Commitchi" src="https://commitchi.pages.dev/api/card?u=YOUR_USERNAME">
+</picture>
+```
+
+Options: `&theme=dark`, `&species=mooncat`. That's it - the card stays live (30-min cache).
+
+---
+
 ## Features
 
 - Pixel-art pet on a Game Boy-style LCD inside a Tamagotchi device frame
@@ -58,15 +81,15 @@ activity. A 12-week contribution heatmap and recent commit feed show on the devi
 
 ---
 
-## Use it now
+## Use it in the browser
 
-No setup needed. Just visit:
+No setup needed. Visit:
 
 ```
-https://cludes.github.io/commitchi/?u=YOUR_GITHUB_USERNAME
+https://commitchi.pages.dev/?u=YOUR_GITHUB_USERNAME
 ```
 
-Tap the SHARE YOUR PET button to copy a direct link to your creature.
+Tap SHARE YOUR PET to copy a direct link, or DOWNLOAD PNG to save the card.
 
 ---
 
