@@ -365,9 +365,9 @@ export default function App() {
             <div className="landing-embed">
               <span className="landing-embed-label">ADD IT TO YOUR PROFILE README</span>
               <code className="landing-code">
-                ![my pet](https://raw.githubusercontent.com/Cludes/commitchi/master/commitchi.svg)
+                ![my pet](https://commitchi.pages.dev/api/card?u=YOUR_USERNAME)
               </code>
-              <span className="landing-embed-hint">Fork the repo to get your own auto-updating card.</span>
+              <span className="landing-embed-hint">No fork needed - just swap in your username.</span>
             </div>
           </div>
         )}

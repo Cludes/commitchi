@@ -3,10 +3,9 @@
 A Tamagotchi-style digital pet that lives or dies based on your GitHub commit activity.
 Feed it commits. Keep it alive. Don't let it die.
 
-**Live demo:** https://cludes.github.io/commitchi/?u=Cludes
+**Live demo:** https://commitchi.pages.dev/?u=Cludes
 
-<!-- TODO: add a screenshot or GIF of the pet card here -->
-![Commitchi screenshot placeholder](./commitchi.svg)
+![Commitchi card](https://commitchi.pages.dev/api/card?u=Cludes)
 
 ---
 
@@ -73,17 +72,17 @@ Tap the SHARE YOUR PET button to copy a direct link to your creature.
 
 ## Zero-setup card (hosted)
 
-The fastest way to embed your pet anywhere - no fork, no setup. Once deployed, anyone
-embeds their own card with one line:
+The fastest way to embed your pet anywhere - no fork, no setup. A hosted instance is live,
+so anyone can embed their own card with one line (just change the username):
 
 ```markdown
-![my commitchi](https://YOUR-PROJECT.pages.dev/api/card?u=YOUR_USERNAME)
+![my commitchi](https://commitchi.pages.dev/api/card?u=YOUR_USERNAME)
 ```
 
 Query params: `u` (required), `theme=dark`, `species=mooncat`. Cards are edge-cached for
 30 minutes. The same card builder powers the app, the profile SVG, and this endpoint.
 
-### Deploy to Cloudflare Pages
+### Deploy your own to Cloudflare Pages
 
 1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) - Workers & Pages - Create -
    Pages - Connect to Git, and pick this repo.
@@ -102,31 +101,29 @@ Query params: `u` (required), `theme=dark`, `species=mooncat`. Cards are edge-ca
 
 ---
 
-## Put your pet on your GitHub profile (no hosting)
+## Put your pet on your GitHub profile
 
-Prefer not to host anything? Your profile README can't run JavaScript, but it can show
-an image. This repo ships a GitHub Action that regenerates an SVG of your pet once a day
-and commits it as `commitchi.svg`, so you can embed a live, self-updating pet on your profile.
-
-**1. Fork this repo** (see below) so the Action runs under your account.
-
-**2. Let the Action run.** It runs daily at 06:00 UTC, and you can trigger it
-manually from the Actions tab (Update Pet SVG - Run workflow). It uses your account
-(`github.repository_owner`) automatically, so no config is needed. It produces
-`commitchi.svg` in the repo root.
-
-**3. Add the image to your profile README.** Create a repo named exactly your
-username (e.g. `Cludes/Cludes`), and put this in its `README.md`. The `<picture>`
-element shows a dark-themed card to viewers using GitHub dark mode:
+Create a repo named exactly your username (e.g. `Cludes/Cludes`) and add this to its
+`README.md`. The `<picture>` element shows a dark-themed card in GitHub dark mode:
 
 ```html
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi-dark.svg">
-  <img alt="My Commitchi" src="https://raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://commitchi.pages.dev/api/card?u=YOUR_USERNAME&theme=dark">
+  <img alt="My Commitchi" src="https://commitchi.pages.dev/api/card?u=YOUR_USERNAME">
 </picture>
 ```
 
-The pet's mood, level, streak, and stats update every day as you commit.
+That's it - the card stays live (30-min cache), no fork or workflow needed.
+
+<details>
+<summary>Alternative: a committed SVG via GitHub Actions (no third-party host)</summary>
+
+If you'd rather not depend on a hosted endpoint, fork this repo and let the included
+`Update Pet SVG` Action run (daily at 06:00 UTC, or trigger it manually). It commits
+`commitchi.svg` / `commitchi-dark.svg`, which you embed from
+`raw.githubusercontent.com/YOUR_USERNAME/commitchi/master/commitchi.svg`.
+
+</details>
 
 ### Auto-embed in your profile (optional)
 
