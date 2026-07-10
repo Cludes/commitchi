@@ -27,8 +27,8 @@
     <text x="448" y="85" text-anchor="middle" font-family="'Courier New',monospace" font-size="14" font-weight="bold" fill="#0f380f">4</text>
 
     <rect x="240" y="104" width="230" height="8" fill="#8bac0f" stroke="#0f380f" stroke-width="2"/>
-    <rect x="240" y="104" width="16" height="8" fill="#0f380f"/>
-    <text x="240" y="126" font-family="'Courier New',monospace" font-size="9" fill="#2a5a2a">XP 18/250</text>
+    <rect x="240" y="104" width="18" height="8" fill="#0f380f"/>
+    <text x="240" y="126" font-family="'Courier New',monospace" font-size="9" fill="#2a5a2a">XP 19/250</text>
 
     <text x="240" y="146" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#0f380f">HUNGER</text><rect x="296" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="311" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="326" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="341" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="356" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="371" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="386" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="401" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="416" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="431" y="138" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/>
     <text x="240" y="164" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#0f380f">HAPPY</text><rect x="296" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="311" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="326" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="341" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="356" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="371" y="156" width="13" height="9" fill="#0f380f" stroke="#2a5a2a" stroke-width="1"/><rect x="386" y="156" width="13" height="9" fill="#8bac0f" stroke="#2a5a2a" stroke-width="1"/><rect x="401" y="156" width="13" height="9" fill="#8bac0f" stroke="#2a5a2a" stroke-width="1"/><rect x="416" y="156" width="13" height="9" fill="#8bac0f" stroke="#2a5a2a" stroke-width="1"/><rect x="431" y="156" width="13" height="9" fill="#8bac0f" stroke="#2a5a2a" stroke-width="1"/>
@@ -37,6 +37,6 @@
     <line x1="240" y1="196" x2="470" y2="196" stroke="#2a5a2a" stroke-width="1"/>
     <text x="240" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#0f380f">STREAK 1</text>
     <text x="350" y="216" font-family="'Courier New',monospace" font-size="11" font-weight="bold" fill="#0f380f">LAST TODAY</text>
-    <text x="240" y="234" font-family="'Courier New',monospace" font-size="10" fill="#2a5a2a">114 TOTAL COMMITS</text>
+    <text x="240" y="234" font-family="'Courier New',monospace" font-size="10" fill="#2a5a2a">115 TOTAL COMMITS</text>
   </g>
 </svg>
